@@ -9,7 +9,8 @@ Agent instructions for working in this repository.
 **ARX Infotech** — IT services & tech solutions company, Kolkata, India.
 Live site: `https://arxinfo.tech`
 
-Static HTML/CSS/JS corporate website with PHP backend for contact form and certificate verification. Contains a separate PHP+MySQL online exam module under `exam/`.
+**Migration status:** Converting from static HTML/PHP → Next.js 15 (App Router) + Prisma + MySQL.
+Phase 1 complete. Original HTML/PHP files kept at root for reference during migration.
 
 ---
 
@@ -17,12 +18,33 @@ Static HTML/CSS/JS corporate website with PHP backend for contact form and certi
 
 | Layer | Tech |
 |-------|------|
-| Markup | HTML5 (static pages) |
-| Styling | Bootstrap 5.3.3 (CDN), Tailwind CSS (CDN), Font Awesome 6.5, Bootstrap Icons 1.11 |
-| JS | Vanilla JS only — no framework |
-| Backend | PHP 8.1 (`ea-php81` via cPanel) |
-| Exam DB | MySQL via MySQLi (`utf8mb4`) |
-| Server | Apache + `.htaccess` (cPanel shared hosting) |
+| Framework | Next.js 15.5 (App Router, Turbopack) |
+| Runtime | Node.js 22 (ESM) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 3.4 (primary) + Bootstrap 5.3 (where needed) |
+| Fonts | Poppins (headings) + Inter (body) via `next/font/google` |
+| Animations | Framer Motion 12 + AOS |
+| State | React hooks (useState, useEffect) |
+| Forms | React Hook Form 7 |
+| DB | MySQL via Prisma 6 ORM |
+| Dark mode | next-themes (default: light, persisted) |
+| Icons | Lucide React |
+
+---
+
+## Build Phases
+
+| Phase | Scope | Status |
+|-------|-------|--------|
+| 1 | Project setup: Next.js init, Tailwind, Prisma, layout, global components | ✅ Done |
+| 2 | MySQL schema (prisma/schema.prisma) + migrate + seed | ⏳ Pending |
+| 3 | Home page (all sections) | ⏳ Pending |
+| 4 | About, Services, Contact, Verify pages | ⏳ Pending |
+| 5 | Team, Portfolio, Blog, FAQ pages | ⏳ Pending |
+| 6 | Exam module — candidate flow (login, register, exam, result) | ⏳ Pending |
+| 7 | Exam admin dashboard | ⏳ Pending |
+| 8 | API routes (contact, verify, exam logic) | ⏳ Pending |
+| 9 | Final polish: animations, dark mode, SEO metadata, performance | ⏳ Pending |
 
 ---
 
@@ -30,126 +52,95 @@ Static HTML/CSS/JS corporate website with PHP backend for contact form and certi
 
 ```
 arxinfo.tech/
-├── index.html          # Home page
-├── about.html          # About page
-├── services.html       # Services listing
-├── contact.html        # Contact page (form submits to contact.php)
-├── contact.php         # Sends dual HTML emails (admin + user confirmation)
-├── verify.php          # Certificate / document verification portal
-├── sitemap.xml         # SEO sitemap
-├── .htaccess           # Apache rewrite rules + PHP handler config
-├── assets/
-│   ├── css/style.css   # All custom styles (global, navbar, hero, cards, footer)
-│   ├── js/main.js      # Minimal JS (currentYear footer, scroll animations)
-│   ├── images/         # logo.png, favicon-*.png, favicon.ico, apple-touch-icon.png, og-banner.png
-│   └── video/hero.mp4  # Hero section background video
-└── exam/               # Standalone online proctored exam system
-    ├── config.php       # DB connection (DO NOT hardcode creds in other files)
-    ├── index.php        # Candidate landing / voucher entry
-    ├── database.sql     # Full schema — import to MySQL to set up
-    ├── admin/
-    │   ├── login.php
-    │   └── dashboard.php
-    ├── candidate/
-    │   ├── register.php
-    │   ├── exam.php
-    │   ├── submit.php
-    │   └── result.php
-    └── assests/
-        └── proctor.js  # Browser proctoring logic
+├── app/
+│   ├── globals.css          # Tailwind base + custom utilities (btn-primary, section-title)
+│   ├── layout.tsx           # Root layout — fonts, metadata, all providers + global components
+│   └── page.tsx             # Home placeholder (Phase 3 replaces)
+├── components/
+│   ├── Navbar.tsx           # Sticky nav, shrink-on-scroll, active link, mobile menu
+│   ├── Footer.tsx           # 4-col footer — brand, quick links, services, contact
+│   ├── Preloader.tsx        # Navy screen + logo + bouncing dots, fades after 1.8s
+│   ├── WhatsAppButton.tsx   # Floating green WhatsApp button (bottom-left)
+│   ├── BackToTop.tsx        # Gold chevron button, appears after 400px scroll
+│   ├── DarkModeToggle.tsx   # Sun/Moon toggle via next-themes
+│   └── providers.tsx        # ThemeProvider wrapper (client component)
+├── lib/
+│   ├── db.ts                # Singleton Prisma client
+│   └── utils.ts             # cn() helper (clsx + tailwind-merge)
+├── prisma/
+│   └── schema.prisma        # MySQL datasource — models added in Phase 2
+├── public/
+│   ├── images/              # logo.png, favicons, og-banner.png
+│   └── video/hero.mp4       # Hero background video
+├── next.config.ts
+├── tailwind.config.ts       # Navy #0A1F44 + Gold #C9A84C theme, font vars
+├── tsconfig.json
+├── postcss.config.mjs
+├── .env.local               # DATABASE_URL (gitignored)
+├── package.json
+│
+│  ── Legacy files (reference only, do not edit) ──
+├── index.html
+├── about.html
+├── services.html
+├── contact.html
+├── contact.php
+├── verify.php
+└── exam/                    # PHP exam module — will be replaced in Phase 6–7
 ```
 
 ---
 
 ## Design System
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| Background dark | `#111827` | Navbar, footer, dark cards, emails |
-| Accent yellow | `#facc15` | Brand color, CTAs, highlights |
-| Text light | `#9ca3af` | Footer text |
-| Border radius | `rounded-4` (Bootstrap) | Cards, sections |
-| Shadow | `shadow` / `shadow-lg` | Cards, navbar |
+| Token | Value | Tailwind class |
+|-------|-------|----------------|
+| Primary navy | `#0A1F44` | `bg-navy-900`, `text-navy-900` |
+| Accent gold | `#C9A84C` | `bg-gold-400`, `text-gold-400` |
+| Gold hover | `#b5932f` | `bg-gold-500` |
+| Background | `#FFFFFF` / `gray-950` (dark) | `bg-white dark:bg-gray-950` |
+| Body font | Inter | `font-inter` |
+| Heading font | Poppins | `font-poppins` |
 
-**Navbar:** sticky-top, dark (`#111827`), logo left, links right. Active link = yellow (`#facc15`).
-**Hero:** full-width video background (`hero.mp4`), overlay content left-aligned, two CTA buttons (warning + outline-light).
-**Cards:** `service-card` class, white bg, `rounded-4 shadow`.
-**Footer:** 3-column (brand+desc | quick links | contact), dark bg, copyright with dynamic year via JS.
+**Navbar:** fixed top, navy bg, shrinks on scroll >50px (py-4 → py-2 + backdrop-blur). Active link = gold.
+**Buttons:** `.btn-primary` (gold bg, navy text) / `.btn-outline` (gold border).
+**Footer:** always navy-900, never affected by dark mode.
 
 ---
 
 ## Key Conventions
 
-### HTML Pages
-- Copy exact `<head>` block from `index.html` for every new page — includes SEO meta, OG, Twitter, favicons, all CDN links
-- Update `<title>`, `<meta name="description">`, `<link rel="canonical">` per page
-- Active nav link gets `active` class (turns yellow)
-- Every page ends with Bootstrap JS CDN + `assets/js/main.js`
-- Scroll animations: add class `scroll-animate` to sections/elements
-
-### CSS (`assets/css/style.css`)
-- All custom styles go here — no inline `style=""` attributes
-- Bootstrap utility classes preferred for spacing/layout
-- Tailwind CDN loaded but Bootstrap takes precedence for components
-- Do NOT introduce CSS frameworks beyond what's already loaded
-
-### JS (`assets/js/main.js`)
-- Vanilla JS only — no npm, no bundler, no framework
-- Currently sets `#currentYear` in footer
-- Add scroll animation observers here if expanding
-
-### PHP
-- `contact.php`: POST-only handler. Uses `htmlspecialchars()` on all inputs. Sends HTML email to admin + confirmation to user via `mail()`. Redirects to `contact.html` after.
-- `verify.php`: Certificate verification portal
-- `exam/config.php`: DB credentials live here only — never duplicate or hardcode elsewhere
-
-### Exam Module (`exam/`)
-- Standalone app — its own session, DB, auth
-- Default admin: `admin` / `admin123` — must change in production
-- Voucher system: candidates need valid voucher code to start exam
-- Demo voucher: `DEMO-2026`
-- Setup: import `database.sql` → update `config.php` → serve with PHP
+- **Imports:** `@/*` alias maps to repo root. Use `@/components/...`, `@/lib/...`, `@/app/...`
+- **Client components:** add `"use client"` only when using hooks, browser APIs, or motion
+- **Dark mode:** Tailwind `dark:` prefix. ThemeProvider uses `attribute="class"` on `<html>`
+- **No inline `style={{}}`** — Tailwind classes only
+- **No styled-components** — pure Tailwind + CSS modules if needed
+- **Routing:** Next.js App Router file-system routing. No React Router.
+- **API routes:** `app/api/**/route.ts` with named exports (`GET`, `POST`)
+- **DB access:** always via `prisma` from `@/lib/db`
+- **Schema changes:** edit `prisma/schema.prisma` → run `npm run db:push`. No migration files.
 
 ---
 
-## Server / Hosting
+## Shell Commands
 
-- **Host:** cPanel shared hosting
-- **PHP version:** 8.1 (`ea-php81`, set in `.htaccess`)
-- **Domain:** `arxinfo.tech` — www redirects to non-www (301 in `.htaccess`)
-- **Email:** `info@arxinfo.tech` — contact form uses server `mail()` function
-- **Assets served:** static from `assets/` directory
-
----
-
-## Local Development
-
-Static HTML pages — open directly in browser or use a local server:
-
-```bash
-# Python
-python -m http.server 8080
-
-# Node
-npx serve .
-
-# PHP (required for .php files and exam module)
-php -S localhost:8080
-```
-
-For exam module:
-```bash
-php -S localhost:8000 -t exam/
+```powershell
+npm run dev          # Next.js dev server (Turbopack) → http://localhost:3000
+npm run build        # Production build
+npm run lint         # ESLint
+npm run db:push      # Sync Prisma schema → MySQL
+npm run db:studio    # Prisma Studio GUI
+npm run db:generate  # Regenerate Prisma client after schema change
 ```
 
 ---
 
-## SEO Notes
+## Environment
 
-- `sitemap.xml` exists — update when adding new pages
-- Each page has full keyword meta, OG, Twitter card, Schema.org JSON-LD
-- Canonical URL must be set per page
-- `robots` meta: `index, follow`
+```
+DATABASE_URL="mysql://root@localhost:3306/arx"
+```
+File: `.env.local` (gitignored — never commit)
 
 ---
 
@@ -158,16 +149,16 @@ php -S localhost:8000 -t exam/
 - **Email:** info@arxinfo.tech
 - **Phone:** +91 8317818107
 - **WhatsApp:** wa.me/918317818107
-- **Address:** 1st Floor, 150, Panchita, Bongaon-Bagdh Rd. Street, Kolkata, WB 743235, India
+- **Address:** 1st Floor, 150, Panchita, Bongaon-Bagdh Rd, Kolkata 743235, India
 
 ---
 
 ## What NOT To Do
 
-- Do not add npm/Node.js build step — site is pure static + PHP, no bundler
-- Do not add new CSS frameworks — Bootstrap + Tailwind CDN already loaded
-- Do not add inline `style=""` — use `style.css` or Tailwind utility classes
-- Do not hardcode DB credentials outside `exam/config.php`
-- Do not generate migration files — schema lives in `exam/database.sql`
-- Do not change PHP handler in `.htaccess` — cPanel-managed, breaks hosting
-- Do not commit credentials or `.env` files
+- Do not edit legacy `.html` / `.php` files — reference only
+- Do not add inline `style={{}}` props — use Tailwind
+- Do not hardcode `DATABASE_URL` — always use `process.env.DATABASE_URL`
+- Do not commit `.env.local`
+- Do not generate Prisma migration files — use `db push` only
+- Do not use React Router — App Router file-system routing only
+- Do not duplicate Prisma client — import from `@/lib/db` only
