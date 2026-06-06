@@ -37,7 +37,7 @@ Phase 1 complete. Original HTML/PHP files kept at root for reference during migr
 | Phase | Scope | Status |
 |-------|-------|--------|
 | 1 | Project setup: Next.js init, Tailwind, Prisma, layout, global components | ✅ Done |
-| 2 | MySQL schema (prisma/schema.prisma) + migrate + seed | ⏳ Pending |
+| 2 | MySQL schema (prisma/schema.prisma) + db push + seed | ✅ Done |
 | 3 | Home page (all sections) | ⏳ Pending |
 | 4 | About, Services, Contact, Verify pages | ⏳ Pending |
 | 5 | Team, Portfolio, Blog, FAQ pages | ⏳ Pending |
@@ -68,7 +68,11 @@ arxinfo.tech/
 │   ├── db.ts                # Singleton Prisma client
 │   └── utils.ts             # cn() helper (clsx + tailwind-merge)
 ├── prisma/
-│   └── schema.prisma        # MySQL datasource — models added in Phase 2
+│   ├── schema.prisma        # 10 models: Contact, Certificate, BlogPost, TeamMember,
+│   │                        # PortfolioItem, ExamAdmin, ExamQuestion, ExamCandidate,
+│   │                        # ExamResult, ExamVoucher
+│   └── seed.ts              # Seeds: 4 certs, 5 team, 5 portfolio, 5 blog, 10 questions,
+│                            # 5 vouchers, 1 exam admin (admin/Admin@2025)
 ├── public/
 │   ├── images/              # logo.png, favicons, og-banner.png
 │   └── video/hero.mp4       # Hero background video
@@ -128,8 +132,9 @@ arxinfo.tech/
 npm run dev          # Next.js dev server (Turbopack) → http://localhost:3000
 npm run build        # Production build
 npm run lint         # ESLint
-npm run db:push      # Sync Prisma schema → MySQL
-npm run db:studio    # Prisma Studio GUI
+npm run db:push      # Sync Prisma schema → MySQL (use after schema changes)
+npm run db:seed      # Reseed database with sample data (destructive — clears first)
+npm run db:studio    # Prisma Studio GUI → http://localhost:5555
 npm run db:generate  # Regenerate Prisma client after schema change
 ```
 
@@ -140,7 +145,9 @@ npm run db:generate  # Regenerate Prisma client after schema change
 ```
 DATABASE_URL="mysql://root@localhost:3306/arx"
 ```
-File: `.env.local` (gitignored — never commit)
+Two env files — both gitignored, never commit either:
+- `.env` — read by Prisma CLI (`db:push`, `db:seed`, `db:studio`)
+- `.env.local` — read by Next.js runtime (API routes, server components)
 
 ---
 
@@ -158,7 +165,9 @@ File: `.env.local` (gitignored — never commit)
 - Do not edit legacy `.html` / `.php` files — reference only
 - Do not add inline `style={{}}` props — use Tailwind
 - Do not hardcode `DATABASE_URL` — always use `process.env.DATABASE_URL`
-- Do not commit `.env.local`
+- Do not commit `.env` or `.env.local` — both are gitignored
 - Do not generate Prisma migration files — use `db push` only
 - Do not use React Router — App Router file-system routing only
 - Do not duplicate Prisma client — import from `@/lib/db` only
+- `db:seed` deletes all rows before inserting — never run on production
+- Prisma CLI reads `.env`; Next.js runtime reads `.env.local` — keep both in sync
