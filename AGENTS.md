@@ -44,7 +44,7 @@ Phase 1 complete. Original HTML/PHP files kept at root for reference during migr
 | 6 | Exam module — integrate external voucher-based exam site | 🔗 External |
 | 7 | Exam admin dashboard — part of external exam site | 🔗 External |
 | 8 | API routes (contact, verify) | ✅ Done |
-| 9 | Final polish: animations, dark mode, SEO metadata, performance | ⏳ Pending |
+| 9 | Final polish: animations, dark mode, SEO metadata, performance | ✅ Done |
 
 ---
 
@@ -106,6 +106,10 @@ arxinfo.tech/
 │   ├── blog/page.tsx              # Published blog post listing
 │   ├── blog/[slug]/page.tsx       # Single blog post + markdown renderer + tags
 │   ├── faq/page.tsx               # Accordion FAQ (4 categories, hardcoded)
+│   ├── not-found.tsx              # Custom 404: navy bg, 404 gold, back-home + contact links
+│   ├── loading.tsx                # Global loading: centered gold spinner
+│   ├── sitemap.ts                 # Dynamic sitemap: static routes + published blog slugs from DB
+│   ├── robots.ts                  # robots.txt: allow all, disallow /api/, sitemap ref
 │   └── api/
 │       ├── contact/route.ts       # POST → prisma.contact.create()
 │       └── verify/route.ts        # GET ?id= → prisma.certificate.findUnique()

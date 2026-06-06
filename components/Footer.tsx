@@ -137,7 +137,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-400">
-          <p>© 2025 ARX Infotech. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ARX Infotech. All rights reserved.</p>
           <p>Crafted with care in Kolkata, India</p>
         </div>
       </div>

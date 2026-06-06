@@ -73,6 +73,39 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "ARX Infotech",
+  url: "https://arxinfo.tech",
+  logo: "https://arxinfo.tech/images/logo.png",
+  image: "https://arxinfo.tech/images/og-banner.png",
+  telephone: "+91-8317818107",
+  email: "info@arxinfo.tech",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "1st Floor, 150, Panchita, Bongaon-Bagdh Rd",
+    addressLocality: "Kolkata",
+    addressRegion: "West Bengal",
+    postalCode: "743235",
+    addressCountry: "IN",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 23.1087,
+    longitude: 88.8111,
+  },
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    opens: "10:00",
+    closes: "19:00",
+  },
+  sameAs: [
+    "https://wa.me/918317818107",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -80,6 +113,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${poppins.variable} ${inter.variable} font-inter`}>
         <Providers>
           <AOSInit />

@@ -26,8 +26,10 @@ export default async function TeamPage() {
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14" data-aos="fade-up">
-            <p className="section-subtitle">The People Behind ARX</p>
-            <h2 className="section-title">Leadership &amp; Expertise</h2>
+            <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
+              The People Behind ARX
+            </p>
+            <h2 className="section-title mb-4">Leadership &amp; Expertise</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">

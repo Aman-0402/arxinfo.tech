@@ -37,8 +37,10 @@ export default async function PortfolioPage() {
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14" data-aos="fade-up">
-            <p className="section-subtitle">What We&apos;ve Built</p>
-            <h2 className="section-title">Case Studies &amp; Projects</h2>
+            <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
+              What We&apos;ve Built
+            </p>
+            <h2 className="section-title mb-4">Case Studies &amp; Projects</h2>
           </div>
           <PortfolioGrid items={items} />
         </div>
