@@ -38,7 +38,7 @@ Phase 1 complete. Original HTML/PHP files kept at root for reference during migr
 |-------|-------|--------|
 | 1 | Project setup: Next.js init, Tailwind, Prisma, layout, global components | ✅ Done |
 | 2 | MySQL schema (prisma/schema.prisma) + db push + seed | ✅ Done |
-| 3 | Home page (all sections) | ⏳ Pending |
+| 3 | Home page (all sections) | ✅ Done |
 | 4 | About, Services, Contact, Verify pages | ⏳ Pending |
 | 5 | Team, Portfolio, Blog, FAQ pages | ⏳ Pending |
 | 6 | Exam module — integrate external voucher-based exam site | 🔗 External |
@@ -54,8 +54,8 @@ Phase 1 complete. Original HTML/PHP files kept at root for reference during migr
 arxinfo.tech/
 ├── app/
 │   ├── globals.css          # Tailwind base + custom utilities (btn-primary, section-title)
-│   ├── layout.tsx           # Root layout — fonts, metadata, all providers + global components
-│   └── page.tsx             # Home placeholder (Phase 3 replaces)
+│   ├── layout.tsx           # Root layout — fonts, metadata, AOSInit, all providers + global components
+│   └── page.tsx             # Home page — imports all 8 section components
 ├── components/
 │   ├── Navbar.tsx           # Sticky nav, shrink-on-scroll, active link, mobile menu
 │   ├── Footer.tsx           # 4-col footer — brand, quick links, services, contact
@@ -63,7 +63,17 @@ arxinfo.tech/
 │   ├── WhatsAppButton.tsx   # Floating green WhatsApp button (bottom-left)
 │   ├── BackToTop.tsx        # Gold chevron button, appears after 400px scroll
 │   ├── DarkModeToggle.tsx   # Sun/Moon toggle via next-themes
-│   └── providers.tsx        # ThemeProvider wrapper (client component)
+│   ├── AOSInit.tsx          # Initialises AOS on mount (client component, renders null)
+│   ├── providers.tsx        # ThemeProvider wrapper (client component)
+│   └── home/
+│       ├── HeroSection.tsx          # Full-screen video bg, Framer Motion entry, 2 CTAs, 3 badges
+│       ├── WhyChooseSection.tsx     # Checklist left + navy highlight box right (AOS)
+│       ├── ServicesSection.tsx      # 6 service cards with icon hover, AOS stagger
+│       ├── StatsCounter.tsx         # Animated counters: 50+ clients, 100+ projects, 5+ yrs, 24/7
+│       ├── WhatWeDeliverSection.tsx # 2-col: light card (IT Infra) + navy card (Dev/Automation)
+│       ├── ClientsMarquee.tsx       # CSS marquee with 10 placeholder client names
+│       ├── TestimonialsSection.tsx  # 3 testimonial cards with star ratings (AOS)
+│       └── CTASection.tsx           # Navy rounded box, 2 action buttons (consult + call)
 ├── lib/
 │   ├── db.ts                # Singleton Prisma client
 │   └── utils.ts             # cn() helper (clsx + tailwind-merge)
