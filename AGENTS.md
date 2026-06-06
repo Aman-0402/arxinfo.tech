@@ -40,7 +40,7 @@ Phase 1 complete. Original HTML/PHP files kept at root for reference during migr
 | 2 | MySQL schema (prisma/schema.prisma) + db push + seed | ✅ Done |
 | 3 | Home page (all sections) | ✅ Done |
 | 4 | About, Services, Contact, Verify pages | ✅ Done |
-| 5 | Team, Portfolio, Blog, FAQ pages | ⏳ Pending |
+| 5 | Team, Portfolio, Blog, FAQ pages | ✅ Done |
 | 6 | Exam module — integrate external voucher-based exam site | 🔗 External |
 | 7 | Exam admin dashboard — part of external exam site | 🔗 External |
 | 8 | API routes (contact, verify) | ✅ Done |
@@ -67,9 +67,13 @@ arxinfo.tech/
 │   ├── providers.tsx        # ThemeProvider wrapper (client component)
 │   ├── PageHero.tsx             # Reusable page banner: navy bg, video overlay, title+subtitle
 │   ├── contact/
-│   │   └── ContactForm.tsx      # React Hook Form contact form → POST /api/contact
+│   │   └── ContactForm.tsx          # React Hook Form contact form → POST /api/contact
 │   ├── verify/
-│   │   └── VerifyForm.tsx       # Certificate lookup → GET /api/verify?id=...
+│   │   └── VerifyForm.tsx           # Certificate lookup → GET /api/verify?id=...
+│   ├── portfolio/
+│   │   └── PortfolioGrid.tsx        # "use client", category filter tabs + project cards
+│   └── faq/
+│       └── FaqAccordion.tsx         # "use client", accordion with open/close state
 │   └── home/
 │       ├── HeroSection.tsx          # Full-screen video bg, Framer Motion entry, 2 CTAs, 3 badges
 │       ├── WhyChooseSection.tsx     # Checklist left + navy highlight box right (AOS)
@@ -81,7 +85,8 @@ arxinfo.tech/
 │       └── CTASection.tsx           # Navy rounded box, 2 action buttons (consult + call)
 ├── lib/
 │   ├── db.ts                # Singleton Prisma client
-│   └── utils.ts             # cn() helper (clsx + tailwind-merge)
+│   ├── utils.ts             # cn() helper (clsx + tailwind-merge)
+│   └── markdown.tsx         # renderMarkdown() — line-by-line MD→JSX (h2/h3/ul/p/bold)
 ├── prisma/
 │   ├── schema.prisma        # 10 models: Contact, Certificate, BlogPost, TeamMember,
 │   │                        # PortfolioItem, ExamAdmin, ExamQuestion, ExamCandidate,
@@ -92,13 +97,18 @@ arxinfo.tech/
 │   ├── images/              # logo.png, favicons, og-banner.png
 │   └── video/hero.mp4       # Hero background video
 ├── app/
-│   ├── about/page.tsx       # Who We Are, Vision/Mission, Core Strength, CTA
-│   ├── services/page.tsx    # 6 service cards, What We Deliver, 3-tier pricing, CTA
-│   ├── contact/page.tsx     # Info card + ContactForm + Google Maps embed
-│   ├── verify/page.tsx      # Trust badge + VerifyForm
+│   ├── about/page.tsx             # Who We Are, Vision/Mission, Core Strength, CTA
+│   ├── services/page.tsx          # 6 service cards, What We Deliver, 3-tier pricing, CTA
+│   ├── contact/page.tsx           # Info card + ContactForm + Google Maps embed
+│   ├── verify/page.tsx            # Trust badge + VerifyForm
+│   ├── team/page.tsx              # Team cards from DB (initials avatar + linkedin)
+│   ├── portfolio/page.tsx         # Portfolio items with category filter (PortfolioGrid)
+│   ├── blog/page.tsx              # Published blog post listing
+│   ├── blog/[slug]/page.tsx       # Single blog post + markdown renderer + tags
+│   ├── faq/page.tsx               # Accordion FAQ (4 categories, hardcoded)
 │   └── api/
-│       ├── contact/route.ts # POST → prisma.contact.create()
-│       └── verify/route.ts  # GET ?id= → prisma.certificate.findUnique()
+│       ├── contact/route.ts       # POST → prisma.contact.create()
+│       └── verify/route.ts        # GET ?id= → prisma.certificate.findUnique()
 ├── next.config.ts
 ├── tailwind.config.ts       # Navy #0A1F44 + Gold #C9A84C theme, font vars
 ├── tsconfig.json
