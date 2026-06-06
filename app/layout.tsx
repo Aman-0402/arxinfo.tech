@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
+import AOSInit from "@/components/AOSInit";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -81,6 +82,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} ${inter.variable} font-inter`}>
         <Providers>
+          <AOSInit />
           <Preloader />
           <Navbar />
           <main>{children}</main>

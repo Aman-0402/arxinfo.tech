@@ -1,14 +1,23 @@
+import HeroSection from "@/components/home/HeroSection";
+import WhyChooseSection from "@/components/home/WhyChooseSection";
+import ServicesSection from "@/components/home/ServicesSection";
+import StatsCounter from "@/components/home/StatsCounter";
+import WhatWeDeliverSection from "@/components/home/WhatWeDeliverSection";
+import ClientsMarquee from "@/components/home/ClientsMarquee";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import CTASection from "@/components/home/CTASection";
+
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 pt-20">
-      <div className="text-center">
-        <h1 className="font-poppins font-bold text-4xl text-navy-900 dark:text-white mb-4">
-          ARX Infotech
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          Phase 1 complete — home page coming in Phase 3
-        </p>
-      </div>
-    </div>
+    <>
+      <HeroSection />
+      <WhyChooseSection />
+      <ServicesSection />
+      <StatsCounter />
+      <WhatWeDeliverSection />
+      <ClientsMarquee />
+      <TestimonialsSection />
+      <CTASection />
+    </>
   );
 }

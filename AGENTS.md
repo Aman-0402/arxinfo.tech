@@ -41,9 +41,9 @@ Phase 1 complete. Original HTML/PHP files kept at root for reference during migr
 | 3 | Home page (all sections) | ⏳ Pending |
 | 4 | About, Services, Contact, Verify pages | ⏳ Pending |
 | 5 | Team, Portfolio, Blog, FAQ pages | ⏳ Pending |
-| 6 | Exam module — candidate flow (login, register, exam, result) | ⏳ Pending |
-| 7 | Exam admin dashboard | ⏳ Pending |
-| 8 | API routes (contact, verify, exam logic) | ⏳ Pending |
+| 6 | Exam module — integrate external voucher-based exam site | 🔗 External |
+| 7 | Exam admin dashboard — part of external exam site | 🔗 External |
+| 8 | API routes (contact, verify) | ⏳ Pending |
 | 9 | Final polish: animations, dark mode, SEO metadata, performance | ⏳ Pending |
 
 ---
