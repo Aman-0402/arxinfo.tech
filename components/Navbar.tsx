@@ -34,6 +34,8 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <nav
       className={cn(
