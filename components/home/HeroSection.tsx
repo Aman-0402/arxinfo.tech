@@ -14,6 +14,7 @@ export default function HeroSection() {
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover opacity-20"
+        suppressHydrationWarning
       >
         <source src="/video/hero.mp4" type="video/mp4" />
       </video>

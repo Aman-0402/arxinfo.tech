@@ -119,7 +119,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${poppins.variable} ${inter.variable} font-inter`}>
+      <body className={`${poppins.variable} ${inter.variable} font-inter`} suppressHydrationWarning>
         <Providers>
           <AOSInit />
           <Preloader />

@@ -21,6 +21,19 @@
   }
 }
 
+/* Scroll animations — replaces AOS library to avoid SSR hydration mismatch */
+[data-aos] {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-duration: 700ms;
+}
+[data-aos="fade-up"]    { transform: translateY(30px); }
+[data-aos="fade-down"]  { transform: translateY(-30px); }
+[data-aos="fade-right"] { transform: translateX(-30px); }
+[data-aos="fade-left"]  { transform: translateX(30px); }
+[data-aos].aos-animate  { opacity: 1; transform: none; }
+
 @layer components {
   .section-title {
     @apply font-poppins font-bold text-3xl md:text-4xl text-navy-900 dark:text-white;
