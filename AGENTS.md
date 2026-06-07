@@ -55,7 +55,7 @@ Live site: `https://arxinfo.tech`
 ```
 arxinfo.tech/
 ├── app/
-│   ├── globals.css                    # Tailwind base + custom utilities + data-reveal animation CSS
+│   ├── globals.css                    # Tailwind base + custom utilities + data-arx keyframe animation CSS
 │   ├── layout.tsx                     # Root layout — fonts, JSON-LD, AOSInit, Navbar, ConditionalFooter
 │   ├── page.tsx                       # Home page — 8 section components
 │   ├── not-found.tsx                  # Custom 404: navy bg, gold 404, back-home + contact
@@ -227,18 +227,24 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 
 **How it works (`AOSInit.tsx`):**
 1. `requestAnimationFrame` + `setTimeout(fn, 50)` — runs after React fully commits
-2. In-viewport elements get `arx-in` class immediately (no flash)
-3. `js-ready` class added to `<body>` AFTER in-viewport elements have `arx-in` — activates CSS hiding
-4. `IntersectionObserver` watches remaining elements, adds `arx-in` on scroll
-5. Runs on every `pathname` change (re-scans on navigation)
-6. `suppressHydrationWarning` on every `data-arx` element — browser extension may add `arx-in` before hydration
+2. `IntersectionObserver` observes all `[data-arx]` elements; fires immediately for in-viewport elements
+3. On intersect: adds `arx-in` class (with optional `data-arx-delay` ms delay), then unobserves
+4. Runs on every `pathname` change (re-scans on navigation)
+5. `suppressHydrationWarning` on every `data-arx` element — browser extension may add `arx-in` before hydration
+
+**No `js-ready` gate.** Elements are always visible. `arx-in` triggers a `@keyframes` animation that starts from `opacity:0` — content never hidden, no black sections on first load.
 
 **CSS (`globals.css`):**
 ```css
-.js-ready [data-arx] { opacity: 0; transition: opacity 700ms, transform 700ms; }
-.js-ready [data-arx="fade-up"] { transform: translateY(30px); }
-/* etc. */
-.js-ready [data-arx].arx-in { opacity: 1; transform: none; }
+@keyframes arx-fade-up    { from { opacity: 0; transform: translateY(30px); }  to { opacity: 1; transform: none; } }
+@keyframes arx-fade-down  { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: none; } }
+@keyframes arx-fade-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: none; } }
+@keyframes arx-fade-left  { from { opacity: 0; transform: translateX(30px); }  to { opacity: 1; transform: none; } }
+
+[data-arx="fade-up"].arx-in    { animation: arx-fade-up    0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
+[data-arx="fade-down"].arx-in  { animation: arx-fade-down  0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
+[data-arx="fade-right"].arx-in { animation: arx-fade-right 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
+[data-arx="fade-left"].arx-in  { animation: arx-fade-left  0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
 ```
 
 **Note:** Attribute renamed twice due to browser extension interference:
