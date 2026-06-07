@@ -19,7 +19,7 @@ const devItems = [
 export default function WhatWeDeliverSection() {
   return (
     <section className="py-20 bg-white dark:bg-gray-950">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         {/* Header */}
         <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
           <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
@@ -92,3 +92,4 @@ export default function WhatWeDeliverSection() {
     </section>
   );
 }
+

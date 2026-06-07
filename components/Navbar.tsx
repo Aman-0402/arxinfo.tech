@@ -39,11 +39,11 @@ export default function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-navy-900/95 backdrop-blur-md shadow-lg py-2"
-          : "bg-navy-900 py-4"
+          ? "bg-navy-900/95 backdrop-blur-md shadow-lg py-3"
+          : "bg-navy-900 py-5"
       )}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
+      <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
@@ -51,7 +51,7 @@ export default function Navbar() {
             alt="ARX Infotech"
             width={445}
             height={102}
-            className="h-10 w-auto"
+            className="h-12 w-auto"
             priority
           />
         </Link>
@@ -128,3 +128,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

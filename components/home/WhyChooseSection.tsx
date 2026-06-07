@@ -20,7 +20,7 @@ const highlights = [
 export default function WhyChooseSection() {
   return (
     <section className="py-20 bg-white dark:bg-gray-950">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left */}
           <div suppressHydrationWarning data-arx="fade-right">
@@ -85,3 +85,4 @@ export default function WhyChooseSection() {
     </section>
   );
 }
+

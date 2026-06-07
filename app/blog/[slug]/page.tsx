@@ -29,7 +29,7 @@ export default async function BlogPostPage({ params }: Props) {
       <PageHero title={post.title} subtitle={post.category} />
 
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="max-w-3xl mx-auto">
             {/* Back */}
             <Link

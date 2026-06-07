@@ -143,7 +143,7 @@ export default function ServicesPage() {
 
       {/* 6 Service Cards */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               What We Offer
@@ -187,7 +187,7 @@ export default function ServicesPage() {
 
       {/* What We Deliver */}
       <section className="py-20 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               In Detail
@@ -250,7 +250,7 @@ export default function ServicesPage() {
 
       {/* Pricing */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               Packages
@@ -320,3 +320,4 @@ export default function ServicesPage() {
     </>
   );
 }
+

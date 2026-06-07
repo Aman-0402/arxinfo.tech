@@ -50,7 +50,7 @@ export default function AboutPage() {
 
       {/* Who We Are */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div suppressHydrationWarning data-arx="fade-right">
@@ -120,7 +120,7 @@ export default function AboutPage() {
 
       {/* Core Strength */}
       <section className="py-20 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               Why We Stand Out
@@ -161,3 +161,4 @@ export default function AboutPage() {
     </>
   );
 }
+

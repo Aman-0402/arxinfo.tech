@@ -18,7 +18,7 @@ export default function ContactPage() {
       />
 
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Contact Info */}
             <div className="lg:col-span-2" suppressHydrationWarning data-arx="fade-right">
@@ -121,7 +121,7 @@ export default function ContactPage() {
 
       {/* Google Map */}
       <section className="pb-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3669.6834814546705!2d88.81107472738992!3d23.108679827119495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff33b7cd38ff83%3A0x57962577744a60e5!2sARX%20InfoTech!5e0!3m2!1sen!2sin!4v1770559633327!5m2!1sen!2sin"
@@ -139,3 +139,4 @@ export default function ContactPage() {
     </>
   );
 }
+

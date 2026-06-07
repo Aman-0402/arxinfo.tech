@@ -23,7 +23,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-navy-900/60" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-24 pb-16">
+      <div className="relative z-10 container mx-auto pt-24 pb-16">
         <div className="max-w-3xl">
           {/* Badge */}
           <motion.div
@@ -112,3 +112,4 @@ export default function HeroSection() {
     </section>
   );
 }
+

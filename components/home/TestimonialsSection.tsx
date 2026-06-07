@@ -31,7 +31,7 @@ export default async function TestimonialsSection() {
 
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
           <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
             Client Reviews
@@ -85,3 +85,4 @@ export default async function TestimonialsSection() {
     </section>
   );
 }
+

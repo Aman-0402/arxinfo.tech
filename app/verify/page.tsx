@@ -18,7 +18,7 @@ export default function VerifyPage() {
       />
 
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           {/* Trust badge */}
           <div className="flex justify-center mb-10" suppressHydrationWarning data-arx="fade-up">
             <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-5 py-2.5 shadow-sm text-sm text-gray-600 dark:text-gray-300">
@@ -35,3 +35,4 @@ export default function VerifyPage() {
     </>
   );
 }
+

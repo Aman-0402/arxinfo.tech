@@ -18,7 +18,7 @@ export default function PageHero({
         <source src="/video/hero.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-navy-900/75" />
-      <div className="relative z-10 container mx-auto px-4">
+      <div className="relative z-10 container mx-auto">
         <h1 className="font-poppins font-bold text-4xl md:text-5xl text-white mb-4">
           {title}
         </h1>
@@ -31,3 +31,4 @@ export default function PageHero({
     </section>
   );
 }
+

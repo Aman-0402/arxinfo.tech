@@ -8,6 +8,9 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    container: {
+      padding: "30px",
+    },
     extend: {
       colors: {
         navy: {

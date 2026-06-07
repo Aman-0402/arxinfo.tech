@@ -38,7 +38,7 @@ function Counter({ target, suffix, delay }: { target: number; suffix: string; de
 export default function StatsCounterClient({ stats }: { stats: Stat[] }) {
   return (
     <section className="py-20 bg-navy-900">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((s, i) => {
             const Icon = ICON_MAP[s.icon] ?? Users;
@@ -57,3 +57,4 @@ export default function StatsCounterClient({ stats }: { stats: Stat[] }) {
     </section>
   );
 }
+
