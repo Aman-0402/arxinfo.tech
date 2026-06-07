@@ -85,6 +85,19 @@ model PortfolioItem {
   @@map("portfolio_items")
 }
 
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  icon        String   @default("briefcase") @db.VarChar(100)
+  image       String?  @db.VarChar(500)
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("services")
+}
+
 // ─── Exam Module ─────────────────────────────────────────────────────────────
 
 model ExamAdmin {

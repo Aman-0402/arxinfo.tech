@@ -11,6 +11,7 @@ import {
   Mail,
   Users,
   Briefcase,
+  Layers,
   Menu,
   X,
   LogOut,
@@ -21,6 +22,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/blog", label: "Blog Posts", icon: FileText, exact: false },
+  { href: "/admin/services", label: "Services", icon: Layers, exact: false },
   { href: "/admin/certificates", label: "Certificates", icon: BadgeCheck, exact: false },
   { href: "/admin/contacts", label: "Contacts", icon: Mail, exact: false },
   { href: "/admin/team", label: "Team Members", icon: Users, exact: false },
@@ -81,6 +83,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       {/* Logout */}
       <div className="px-3 py-4 border-t border-white/10">
         <button
+          type="button"
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-semibold font-poppins text-gray-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-150"
         >
@@ -114,6 +117,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         {/* Top bar */}
         <header className="flex items-center gap-4 px-5 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
           <button
+            type="button"
+            aria-label="Open navigation menu"
             className="lg:hidden text-gray-500 hover:text-gray-700"
             onClick={() => setSidebarOpen(true)}
           >

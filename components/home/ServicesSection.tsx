@@ -1,6 +1,5 @@
-"use client";
-
 import Link from "next/link";
+import Image from "next/image";
 import {
   Globe,
   Smartphone,
@@ -8,55 +7,33 @@ import {
   Cloud,
   TrendingUp,
   GraduationCap,
+  Code,
+  Shield,
+  Database,
+  Settings,
   ArrowRight,
 } from "lucide-react";
+import { prisma } from "@/lib/db";
 
-const services = [
-  {
-    icon: Globe,
-    title: "Web Development",
-    description:
-      "Custom websites, web apps, portals, and e-commerce platforms built with modern frameworks for speed, SEO, and scalability.",
-    delay: 0,
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile App Development",
-    description:
-      "Cross-platform Android & iOS apps with intuitive UX, payment integration, and real-time capabilities.",
-    delay: 50,
-  },
-  {
-    icon: Briefcase,
-    title: "IT Consulting",
-    description:
-      "Strategic IT advisory, infrastructure planning, system audits, and technology roadmap design for business transformation.",
-    delay: 100,
-  },
-  {
-    icon: Cloud,
-    title: "Cloud Services",
-    description:
-      "AWS, Azure & GCP cloud migration, architecture design, DevOps pipelines, and managed cloud operations.",
-    delay: 150,
-  },
-  {
-    icon: TrendingUp,
-    title: "Digital Marketing",
-    description:
-      "SEO, Google Ads, social media marketing, and analytics-driven campaigns to grow your online presence.",
-    delay: 200,
-  },
-  {
-    icon: GraduationCap,
-    title: "Software Training",
-    description:
-      "Corporate IT training, developer bootcamps, cloud certification prep, and academic technology programmes.",
-    delay: 250,
-  },
-];
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  globe: Globe,
+  smartphone: Smartphone,
+  briefcase: Briefcase,
+  cloud: Cloud,
+  trending: TrendingUp,
+  graduation: GraduationCap,
+  code: Code,
+  shield: Shield,
+  database: Database,
+  settings: Settings,
+};
 
-export default function ServicesSection() {
+export default async function ServicesSection() {
+  const services = await prisma.service.findMany({
+    where: { active: true },
+    orderBy: { order: "asc" },
+  });
+
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
@@ -67,34 +44,54 @@ export default function ServicesSection() {
           </p>
           <h2 className="section-title mb-4">Our Core Services</h2>
           <p className="section-subtitle">
-            Complete IT and digital transformation solutions for businesses of
-            all sizes.
+            Complete IT and digital transformation solutions for businesses of all sizes.
           </p>
         </div>
 
         {/* Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {services.map(({ icon: Icon, title, description, delay }) => (
-            <div
-              key={title}
-              data-aos="fade-up"
-              data-aos-delay={delay}
-              className="group bg-white dark:bg-gray-800 rounded-2xl p-7 shadow-sm hover:shadow-lg border border-transparent hover:border-gold-400/30 transition-all duration-300"
-            >
-              <div className="w-12 h-12 bg-gold-400/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-gold-400 transition-colors duration-300">
-                <Icon
-                  size={22}
-                  className="text-gold-400 group-hover:text-navy-900 transition-colors duration-300"
-                />
+          {services.map((s, i) => {
+            const Icon = ICON_MAP[s.icon] ?? Briefcase;
+            return (
+              <div
+                key={s.id}
+                data-aos="fade-up"
+                data-aos-delay={i * 50}
+                className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-transparent hover:border-gold-400/30 transition-all duration-300"
+              >
+                {/* Image */}
+                <div className="relative h-48 bg-navy-900 overflow-hidden">
+                  {s.image ? (
+                    <Image
+                      src={s.image}
+                      alt={s.title}
+                      fill
+                      className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-navy-800 to-navy-900" />
+                  )}
+                  {/* gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy-900/70 to-transparent" />
+                  {/* Icon badge */}
+                  <div className="absolute bottom-4 left-5 w-12 h-12 bg-gold-400 rounded-xl flex items-center justify-center shadow-lg">
+                    <Icon size={22} className="text-navy-900" />
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <h3 className="font-poppins font-bold text-lg text-navy-900 dark:text-white mb-2">
+                    {s.title}
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                    {s.description}
+                  </p>
+                </div>
               </div>
-              <h3 className="font-poppins font-bold text-lg text-navy-900 dark:text-white mb-3">
-                {title}
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                {description}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* CTA */}

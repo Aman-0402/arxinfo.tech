@@ -17,6 +17,7 @@ async function main() {
   await prisma.blogPost.deleteMany();
   await prisma.certificate.deleteMany();
   await prisma.contact.deleteMany();
+  await prisma.service.deleteMany();
 
   // ─── Exam Admin ───────────────────────────────────────────────────────────
   const hashedPassword = await bcrypt.hash("Admin@2025", 10);
@@ -475,6 +476,19 @@ Audit your current web presence. If it's loading in 4+ seconds on mobile, you're
     ],
   });
   console.log("✓ 5 blog posts created (4 published, 1 draft)");
+
+  // ─── Services ─────────────────────────────────────────────────────────────
+  await prisma.service.createMany({
+    data: [
+      { title: "Web Development", description: "Custom websites, web apps, portals, and e-commerce platforms built with modern frameworks for speed, SEO, and scalability.", icon: "globe", image: "https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80", order: 1 },
+      { title: "Mobile App Development", description: "Cross-platform Android & iOS apps with intuitive UX, payment integration, and real-time capabilities.", icon: "smartphone", image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80", order: 2 },
+      { title: "IT Consulting", description: "Strategic IT advisory, infrastructure planning, system audits, and technology roadmap design for business transformation.", icon: "briefcase", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&q=80", order: 3 },
+      { title: "Cloud Services", description: "AWS, Azure & GCP cloud migration, architecture design, DevOps pipelines, and managed cloud operations.", icon: "cloud", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80", order: 4 },
+      { title: "Digital Marketing", description: "SEO, Google Ads, social media marketing, and analytics-driven campaigns to grow your online presence.", icon: "trending", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", order: 5 },
+      { title: "Software Training", description: "Corporate IT training, developer bootcamps, cloud certification prep, and academic technology programmes.", icon: "graduation", image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80", order: 6 },
+    ],
+  });
+  console.log("✓ 6 services created");
 
   console.log("\n✅ Seeding complete!");
   console.log("──────────────────────────────────────");
