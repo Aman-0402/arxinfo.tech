@@ -63,7 +63,7 @@ arxinfo.tech/
 │   ├── sitemap.ts                     # Dynamic sitemap: static routes + published blog slugs
 │   ├── robots.ts                      # robots.txt: allow all, disallow /api/
 │   ├── about/page.tsx                 # Who We Are, Vision/Mission, Core Strength, CTA
-│   ├── services/page.tsx              # DB-driven: all active service cards (image style), What We Deliver, 3-tier pricing, CTA
+│   ├── services/page.tsx              # DB-driven: all active service cards + DB-driven pricing plans (PricingPlan model), What We Deliver, CTA
 │   ├── contact/page.tsx               # Info card + ContactForm + Google Maps embed
 │   ├── verify/page.tsx                # Trust badge + VerifyForm
 │   ├── team/page.tsx                  # Team cards from DB (initials avatar + LinkedIn)
@@ -84,7 +84,8 @@ arxinfo.tech/
 │   │       ├── services/page.tsx
 │   │       ├── stats/page.tsx
 │   │       ├── clients/page.tsx
-│   │       └── testimonials/page.tsx
+│   │       ├── testimonials/page.tsx
+│   │       └── pricing/page.tsx
 │   └── api/
 │       ├── contact/route.ts           # POST → prisma.contact.create()
 │       ├── verify/route.ts            # GET ?id= → prisma.certificate.findUnique()
@@ -99,12 +100,13 @@ arxinfo.tech/
 │           ├── services/route.ts + [id]/route.ts
 │           ├── stats/route.ts + [id]/route.ts
 │           ├── clients/route.ts + [id]/route.ts
-│           └── testimonials/route.ts + [id]/route.ts
+│           ├── testimonials/route.ts + [id]/route.ts
+│           └── pricing/route.ts + [id]/route.ts
 ├── components/
 │   ├── Navbar.tsx                     # Fixed nav, transparent default, glassmorphism on scroll, links right-aligned, hidden on /admin/*
 │   ├── Footer.tsx                     # 4-col footer, dynamic year, always navy-900
 │   ├── ConditionalFooter.tsx          # Client wrapper — hides Footer on /admin/* routes
-│   ├── Preloader.tsx                  # Navy screen + logo + bouncing dots, fades at 1.8s
+│   ├── Preloader.tsx                  # Navy screen + ARX.png logo + spinning gold arc + glow rings + bottom progress bar, fades at 1.8s. No text label.
 │   ├── WhatsAppButton.tsx             # Floating WhatsApp (bottom-right), hidden on /admin/*
 │   ├── BackToTop.tsx                  # Gold chevron, appears after 400px scroll
 │   ├── DarkModeToggle.tsx             # Sun/Moon toggle via next-themes
@@ -122,7 +124,8 @@ arxinfo.tech/
 │   │   ├── ServicesTable.tsx          # Services CRUD: icon select, image preview, active toggle
 │   │   ├── StatsTable.tsx             # Stats CRUD: icon, target, suffix, label
 │   │   ├── ClientsTable.tsx           # Clients CRUD: logo image or initials badge, marquee toggle
-│   │   └── TestimonialsTable.tsx      # Testimonials CRUD: star rating, avatar, active toggle
+│   │   ├── TestimonialsTable.tsx      # Testimonials CRUD: star rating, avatar, active toggle
+│   │   └── PricingTable.tsx           # Pricing CRUD: name, tagline, price, period, badge label + color, highlight toggle, features (newline textarea → JSON), button label, order, active
 │   ├── contact/
 │   │   └── ContactForm.tsx            # React Hook Form → POST /api/contact
 │   ├── verify/
@@ -195,6 +198,7 @@ arxinfo.tech/
 | Stats Counter | /admin/stats | BarChart3 |
 | Clients | /admin/clients | Building2 |
 | Testimonials | /admin/testimonials | MessageSquare |
+| Pricing Plans | /admin/pricing | DollarSign |
 
 ### Admin sections status
 | Section | Features | Status |
@@ -210,6 +214,7 @@ arxinfo.tech/
 | Stats Counter | CRUD, icon, target number, suffix, label | ✅ Done |
 | Clients (marquee) | CRUD, logo URL or initials badge, show/hide | ✅ Done |
 | Testimonials | CRUD, star rating (0.5 step), avatar, role | ✅ Done |
+| Pricing Plans | CRUD, badge label + color variant, highlight (navy card), features textarea, button label, order, active | ✅ Done |
 
 ### Admin API guard
 All admin API routes use `isAdminAuthenticated(req)` from `lib/admin-api-guard.ts`.
