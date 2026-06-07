@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import AdminModal from "./AdminModal";
 import { cn } from "@/lib/utils";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Post = {
   id: number;
@@ -46,7 +47,6 @@ export default function BlogTable({ posts }: { posts: Post[] }) {
   const [editing, setEditing] = useState<Post | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const set = (k: string, v: unknown) => setForm((p) => ({ ...p, [k]: v }));
 
@@ -54,7 +54,6 @@ export default function BlogTable({ posts }: { posts: Post[] }) {
     setForm(EMPTY);
     setEditing(null);
     setModal("create");
-    setError("");
   };
 
   const openEdit = (post: Post) => {
@@ -71,19 +70,19 @@ export default function BlogTable({ posts }: { posts: Post[] }) {
     });
     setEditing(post);
     setModal("edit");
-    setError("");
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this blog post?")) return;
+    const ok = await confirmDelete("Delete blog post?", "This cannot be undone.");
+    if (!ok) return;
     await fetch(`/api/admin/blog/${id}`, { method: "DELETE" });
+    await toast("success", "Blog post deleted.");
     router.refresh();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
     const res = await fetch(
       modal === "edit" ? `/api/admin/blog/${editing!.id}` : "/api/admin/blog",
       {
@@ -94,10 +93,11 @@ export default function BlogTable({ posts }: { posts: Post[] }) {
     );
     if (res.ok) {
       setModal(null);
+      await toast("success", modal === "edit" ? "Post updated." : "Post created.");
       router.refresh();
     } else {
       const d = await res.json();
-      setError(d.error || "Save failed");
+      await toast("error", d.error || "Save failed");
     }
     setSaving(false);
   };
@@ -185,12 +185,6 @@ export default function BlogTable({ posts }: { posts: Post[] }) {
           wide
         >
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-lg">
-                <AlertCircle size={14} /> {error}
-              </div>
-            )}
-
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
                 <label className={lbl}>Title *</label>
@@ -209,50 +203,39 @@ export default function BlogTable({ posts }: { posts: Post[] }) {
                 <input className={inp} value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
               </div>
               <div>
+                <label className={lbl}>Category *</label>
+                <select title="Category" className={inp} value={form.category} onChange={(e) => set("category", e.target.value)} required>
+                  <option value="">Select category</option>
+                  {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
                 <label className={lbl}>Author *</label>
                 <input className={inp} value={form.author} onChange={(e) => set("author", e.target.value)} required />
               </div>
               <div>
-                <label className={lbl}>Category *</label>
-                <input className={inp} list="categories" value={form.category} onChange={(e) => set("category", e.target.value)} required />
-                <datalist id="categories">
-                  {categories.map((c) => <option key={c} value={c} />)}
-                </datalist>
-              </div>
-              <div>
                 <label className={lbl}>Tags (comma-separated)</label>
-                <input className={inp} value={form.tags} onChange={(e) => set("tags", e.target.value)} placeholder="cloud,AWS,migration" />
-              </div>
-              <div className="col-span-2">
-                <label className={lbl}>Cover Image URL</label>
-                <input className={inp} value={form.coverImage} onChange={(e) => set("coverImage", e.target.value)} placeholder="/images/blog/cover.jpg" />
+                <input className={inp} value={form.tags} onChange={(e) => set("tags", e.target.value)} placeholder="React, Node.js" />
               </div>
               <div className="col-span-2">
                 <label className={lbl}>Excerpt *</label>
                 <textarea className={inp} rows={2} value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} required />
               </div>
               <div className="col-span-2">
-                <label className={lbl}>Content * (Markdown)</label>
-                <textarea className={cn(inp, "font-mono text-xs")} rows={14} value={form.content} onChange={(e) => set("content", e.target.value)} required />
+                <label className={lbl}>Cover Image URL</label>
+                <input className={inp} value={form.coverImage} onChange={(e) => set("coverImage", e.target.value)} placeholder="https://..." />
               </div>
-              <div className="col-span-2 flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="published"
-                  checked={form.published}
-                  onChange={(e) => set("published", e.target.checked)}
-                  className="w-4 h-4 accent-gold-400"
-                />
-                <label htmlFor="published" className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                  Published
-                </label>
+              <div className="col-span-2">
+                <label className={lbl}>Content * (Markdown)</label>
+                <textarea className={inp} rows={10} value={form.content} onChange={(e) => set("content", e.target.value)} required />
+              </div>
+              <div className="flex items-center gap-3">
+                <input type="checkbox" id="published" checked={form.published} onChange={(e) => set("published", e.target.checked)} className="w-4 h-4 accent-gold-400" />
+                <label htmlFor="published" className="text-sm font-semibold text-gray-700 dark:text-gray-200">Publish immediately</label>
               </div>
             </div>
-
             <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-700 mt-4">
-              <button type="button" onClick={() => setModal(null)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-800 transition-colors">
-                Cancel
-              </button>
+              <button type="button" onClick={() => setModal(null)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-800 transition-colors">Cancel</button>
               <button type="submit" disabled={saving} className="flex items-center gap-2 px-5 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold text-sm rounded-lg transition-colors disabled:opacity-60">
                 {saving && <Loader2 size={14} className="animate-spin" />}
                 {saving ? "Saving..." : "Save Post"}

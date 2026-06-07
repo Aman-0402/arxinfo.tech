@@ -22,7 +22,8 @@ Live site: `https://arxinfo.tech`
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS 3.4 (primary) |
 | Fonts | Poppins (headings) + Inter (body) via `next/font/google` |
-| Animations | Framer Motion 12 + custom IntersectionObserver (`data-reveal`) |
+| Animations | Framer Motion 12 + custom IntersectionObserver (`data-arx`) |
+| Notifications | SweetAlert2 (confirm dialogs) + Toastr.js (success/error toasts) |
 | State | React hooks (useState, useEffect) |
 | Forms | React Hook Form 7 |
 | DB | MySQL via Prisma 6 ORM |
@@ -144,7 +145,8 @@ arxinfo.tech/
 │   ├── utils.ts                       # cn() helper (clsx + tailwind-merge)
 │   ├── markdown.tsx                   # renderMarkdown(): line-by-line MD→JSX
 │   ├── admin-auth.ts                  # verifyCredentials(), getSessionSecret(), cookie constants
-│   └── admin-api-guard.ts             # isAdminAuthenticated(req) — used by all admin API routes
+│   ├── admin-api-guard.ts             # isAdminAuthenticated(req) — used by all admin API routes
+│   └── notify.ts                      # toast() (Toastr) + confirmDelete() + confirmAction() (SweetAlert2)
 ├── middleware.ts                      # Protects /admin/* → redirect to /admin/login (Edge-safe)
 ├── prisma/
 │   ├── schema.prisma                  # 13 models: Contact, Certificate, BlogPost, TeamMember,
@@ -224,11 +226,12 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 - `data-arx-delay="100"` — delay in milliseconds
 
 **How it works (`AOSInit.tsx`):**
-1. `setTimeout(fn, 0)` defers to macrotask queue — runs after React hydration
+1. `requestAnimationFrame` + `setTimeout(fn, 50)` — runs after React fully commits
 2. In-viewport elements get `arx-in` class immediately (no flash)
-3. `js-ready` class added to `<body>` — activates CSS hiding for below-fold elements
+3. `js-ready` class added to `<body>` AFTER in-viewport elements have `arx-in` — activates CSS hiding
 4. `IntersectionObserver` watches remaining elements, adds `arx-in` on scroll
 5. Runs on every `pathname` change (re-scans on navigation)
+6. `suppressHydrationWarning` on every `data-arx` element — browser extension may add `arx-in` before hydration
 
 **CSS (`globals.css`):**
 ```css
@@ -309,7 +312,8 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 - **Admin API routes:** must call `isAdminAuthenticated(req)` from `@/lib/admin-api-guard`
 - **Schema changes:** edit `prisma/schema.prisma` → run `npm run db:push` then `npm run db:generate`
 - **After schema change with dev server running:** run `db:push --skip-generate`, stop server, run `db:generate`, restart
-- **Scroll animations:** use `data-reveal="fade-up"` and `data-reveal-delay="100"` — never `data-aos`
+- **Scroll animations:** use `data-arx="fade-up"` and `data-arx-delay="100"` — never `data-aos` or `data-reveal`
+- **Notifications:** use `toast()` and `confirmDelete()` from `@/lib/notify` — never native `alert()`/`confirm()`
 - **Images:** use `next/image` for local; `<img>` tags acceptable for admin-managed external URLs
 
 ---
@@ -363,6 +367,7 @@ Keep `DATABASE_URL` in sync across both files.
 - Do not duplicate Prisma client — import from `@/lib/db` only
 - Do not duplicate Redis client — import from `@/lib/redis` only
 - Do not place new admin pages outside `app/admin/(shell)/` — they will miss the AdminShell wrapper
-- Do not use `data-aos` attributes — use `data-reveal` instead (AOS library removed)
+- Do not use `data-aos` or `data-reveal` attributes — use `data-arx` (both prior names targeted by browser extension)
+- Do not use native `alert()` or `confirm()` — use `toast()`/`confirmDelete()` from `@/lib/notify`
 - `db:seed` deletes all rows before inserting — never run on production
 - Prisma CLI reads `.env`; Next.js runtime reads `.env.local` — keep both in sync

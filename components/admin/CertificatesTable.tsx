@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle, CheckCircle2, XCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import AdminModal from "./AdminModal";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Cert = {
   id: number;
@@ -38,17 +39,10 @@ export default function CertificatesTable({ certs }: { certs: Cert[] }) {
   const [editing, setEditing] = useState<Cert | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const set = (k: string, v: unknown) => setForm((p) => ({ ...p, [k]: v }));
 
-  const openCreate = () => {
-    setForm(EMPTY);
-    setEditing(null);
-    setModal("create");
-    setError("");
-  };
-
+  const openCreate = () => { setForm(EMPTY); setEditing(null); setModal("create"); };
   const openEdit = (c: Cert) => {
     setForm({
       certificateId: c.certificateId,
@@ -60,12 +54,13 @@ export default function CertificatesTable({ certs }: { certs: Cert[] }) {
     });
     setEditing(c);
     setModal("edit");
-    setError("");
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this certificate? This will break existing verify links.")) return;
+    const ok = await confirmDelete("Delete certificate?", "This will break existing verify links.");
+    if (!ok) return;
     await fetch(`/api/admin/certificates/${id}`, { method: "DELETE" });
+    await toast("success", "Certificate deleted.");
     router.refresh();
   };
 
@@ -75,13 +70,13 @@ export default function CertificatesTable({ certs }: { certs: Cert[] }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...c, issueDate: fmtDate(c.issueDate), expiryDate: fmtDate(c.expiryDate), isValid: !c.isValid }),
     });
+    await toast("success", c.isValid ? "Certificate revoked." : "Certificate restored.");
     router.refresh();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
     const res = await fetch(
       modal === "edit" ? `/api/admin/certificates/${editing!.id}` : "/api/admin/certificates",
       {
@@ -92,10 +87,11 @@ export default function CertificatesTable({ certs }: { certs: Cert[] }) {
     );
     if (res.ok) {
       setModal(null);
+      await toast("success", modal === "edit" ? "Certificate updated." : "Certificate created.");
       router.refresh();
     } else {
       const d = await res.json();
-      setError(d.error || "Save failed");
+      await toast("error", d.error || "Save failed");
     }
     setSaving(false);
   };
@@ -169,11 +165,6 @@ export default function CertificatesTable({ certs }: { certs: Cert[] }) {
       {modal && (
         <AdminModal title={modal === "edit" ? "Edit Certificate" : "New Certificate"} onClose={() => setModal(null)}>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-lg">
-                <AlertCircle size={14} /> {error}
-              </div>
-            )}
             <div>
               <label className={lbl}>Certificate ID * (auto-uppercased)</label>
               <input className={inp} value={form.certificateId} onChange={(e) => set("certificateId", e.target.value.toUpperCase())} placeholder="ARX-2025-WD-001" required />

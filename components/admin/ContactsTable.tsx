@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, ChevronDown, ChevronUp, Phone } from "lucide-react";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Contact = {
   id: number;
@@ -19,8 +20,10 @@ export default function ContactsTable({ contacts }: { contacts: Contact[] }) {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this contact message?")) return;
+    const ok = await confirmDelete("Delete this message?", "The contact message will be permanently removed.");
+    if (!ok) return;
     await fetch(`/api/admin/contacts/${id}`, { method: "DELETE" });
+    await toast("success", "Message deleted.");
     router.refresh();
   };
 

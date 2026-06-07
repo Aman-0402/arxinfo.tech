@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
 import AdminModal from "./AdminModal";
 import { cn } from "@/lib/utils";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Stat = { id: number; icon: string; target: number; suffix: string; label: string; order: number; active: boolean };
 
@@ -19,32 +20,41 @@ export default function StatsTable({ stats }: { stats: Stat[] }) {
   const [editing, setEditing] = useState<Stat | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const set = (k: string, v: unknown) => setForm((p) => ({ ...p, [k]: v }));
-
-  const openCreate = () => { setForm(EMPTY); setEditing(null); setModal("create"); setError(""); };
-  const openEdit = (s: Stat) => { setForm({ icon: s.icon, target: s.target, suffix: s.suffix, label: s.label, order: s.order, active: s.active }); setEditing(s); setModal("edit"); setError(""); };
+  const openCreate = () => { setForm(EMPTY); setEditing(null); setModal("create"); };
+  const openEdit = (s: Stat) => { setForm({ icon: s.icon, target: s.target, suffix: s.suffix, label: s.label, order: s.order, active: s.active }); setEditing(s); setModal("edit"); };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this stat?")) return;
+    const ok = await confirmDelete("Delete this stat?", "It will be removed from the stats counter.");
+    if (!ok) return;
     await fetch(`/api/admin/stats/${id}`, { method: "DELETE" });
+    await toast("success", "Stat deleted.");
     router.refresh();
   };
 
   const handleToggle = async (s: Stat) => {
     await fetch(`/api/admin/stats/${s.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...s, active: !s.active }) });
+    await toast("success", s.active ? "Stat hidden." : "Stat activated.");
     router.refresh();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true); setError("");
+    e.preventDefault();
+    setSaving(true);
     const res = await fetch(modal === "edit" ? `/api/admin/stats/${editing!.id}` : "/api/admin/stats", {
       method: modal === "edit" ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
-    if (res.ok) { setModal(null); router.refresh(); } else { const d = await res.json(); setError(d.error || "Save failed"); }
+    if (res.ok) {
+      setModal(null);
+      await toast("success", modal === "edit" ? "Stat updated." : "Stat created.");
+      router.refresh();
+    } else {
+      const d = await res.json();
+      await toast("error", d.error || "Save failed");
+    }
     setSaving(false);
   };
 
@@ -52,7 +62,7 @@ export default function StatsTable({ stats }: { stats: Stat[] }) {
     <>
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="font-poppins font-bold text-2xl text-gray-800 dark:text-white">Stats</h1><p className="text-gray-500 text-sm mt-1">{stats.length} stat items</p></div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold font-poppins text-sm rounded-lg transition-colors"><Plus size={16} /> New Stat</button>
+        <button type="button" onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold font-poppins text-sm rounded-lg transition-colors"><Plus size={16} /> New Stat</button>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-x-auto">
@@ -71,13 +81,13 @@ export default function StatsTable({ stats }: { stats: Stat[] }) {
                 <td className="px-5 py-3 hidden md:table-cell text-gray-600 dark:text-gray-300 font-mono">{s.target}{s.suffix}</td>
                 <td className="px-5 py-3 hidden md:table-cell text-gray-400 text-xs font-mono">{s.icon}</td>
                 <td className="px-5 py-3">
-                  <button onClick={() => handleToggle(s)} className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors", s.active ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200")}>
+                  <button type="button" onClick={() => handleToggle(s)} className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors", s.active ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200")}>
                     {s.active ? <Eye size={11} /> : <EyeOff size={11} />}{s.active ? "Active" : "Hidden"}
                   </button>
                 </td>
                 <td className="px-5 py-3"><div className="flex items-center justify-end gap-2">
-                  <button onClick={() => openEdit(s)} className="p-1.5 text-gray-400 hover:text-gold-400 transition-colors"><Pencil size={15} /></button>
-                  <button onClick={() => handleDelete(s.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={15} /></button>
+                  <button type="button" onClick={() => openEdit(s)} className="p-1.5 text-gray-400 hover:text-gold-400 transition-colors" title="Edit"><Pencil size={15} /></button>
+                  <button type="button" onClick={() => handleDelete(s.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 size={15} /></button>
                 </div></td>
               </tr>
             ))}
@@ -89,15 +99,14 @@ export default function StatsTable({ stats }: { stats: Stat[] }) {
       {modal && (
         <AdminModal title={modal === "edit" ? "Edit Stat" : "New Stat"} onClose={() => setModal(null)}>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-lg"><AlertCircle size={14} />{error}</div>}
-            <div><label className={lbl}>Label *</label><input className={inp} value={form.label} onChange={(e) => set("label", e.target.value)} required /></div>
+            <div><label className={lbl}>Label *</label><input title="Label" className={inp} value={form.label} onChange={(e) => set("label", e.target.value)} required /></div>
             <div className="grid grid-cols-3 gap-3">
-              <div><label className={lbl}>Target *</label><input type="number" className={inp} value={form.target} onChange={(e) => set("target", e.target.value)} required /></div>
-              <div><label className={lbl}>Suffix</label><input className={inp} value={form.suffix} onChange={(e) => set("suffix", e.target.value)} placeholder="+" /></div>
-              <div><label className={lbl}>Order</label><input type="number" className={inp} value={form.order} onChange={(e) => set("order", e.target.value)} /></div>
+              <div><label className={lbl}>Target *</label><input title="Target" type="number" className={inp} value={form.target} onChange={(e) => set("target", e.target.value)} required /></div>
+              <div><label className={lbl}>Suffix</label><input title="Suffix" className={inp} value={form.suffix} onChange={(e) => set("suffix", e.target.value)} placeholder="+" /></div>
+              <div><label className={lbl}>Order</label><input title="Order" type="number" className={inp} value={form.order} onChange={(e) => set("order", e.target.value)} /></div>
             </div>
             <div><label className={lbl}>Icon</label>
-              <select className={inp} value={form.icon} onChange={(e) => set("icon", e.target.value)}>
+              <select title="Icon" className={inp} value={form.icon} onChange={(e) => set("icon", e.target.value)}>
                 {ICONS.map((i) => <option key={i} value={i}>{i}</option>)}
               </select>
             </div>

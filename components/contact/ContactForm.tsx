@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
+import { toast } from "@/lib/notify";
 
 type FormData = {
   name: string;
@@ -18,7 +19,7 @@ const inputClass =
 const errorClass = "text-red-500 text-xs mt-1";
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -28,7 +29,7 @@ export default function ContactForm() {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    setStatus("loading");
+    setLoading(true);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -36,35 +37,17 @@ export default function ContactForm() {
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        setStatus("success");
         reset();
+        await toast("success", "We'll get back to you within 24 hours.", "Message Sent!");
       } else {
-        setStatus("error");
+        await toast("error", "Something went wrong. Please try again.");
       }
     } catch {
-      setStatus("error");
+      await toast("error", "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
-
-  if (status === "success") {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <CheckCircle size={56} className="text-green-500 mb-4" />
-        <h3 className="font-poppins font-bold text-xl text-navy-900 dark:text-white mb-2">
-          Message Sent!
-        </h3>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">
-          We&apos;ll get back to you within 24 hours.
-        </p>
-        <button
-          onClick={() => setStatus("idle")}
-          className="btn-primary text-sm px-6 py-2.5"
-        >
-          Send Another
-        </button>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -134,19 +117,12 @@ export default function ContactForm() {
         {errors.message && <p className={errorClass}>{errors.message.message}</p>}
       </div>
 
-      {status === "error" && (
-        <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 dark:bg-red-900/20 px-4 py-3 rounded-lg">
-          <AlertCircle size={16} />
-          Something went wrong. Please try again.
-        </div>
-      )}
-
       <button
         type="submit"
-        disabled={status === "loading"}
+        disabled={loading}
         className="w-full flex items-center justify-center gap-2 py-3.5 bg-navy-900 hover:bg-navy-800 dark:bg-gold-400 dark:hover:bg-gold-500 dark:text-navy-900 text-white font-bold font-poppins rounded transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {status === "loading" ? (
+        {loading ? (
           <>
             <Loader2 size={18} className="animate-spin" />
             Sending...

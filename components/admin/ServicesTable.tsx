@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
 import AdminModal from "./AdminModal";
 import { cn } from "@/lib/utils";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Service = {
   id: number;
@@ -30,14 +31,7 @@ const ICONS = [
   { value: "settings", label: "Settings (Infra)" },
 ];
 
-const EMPTY = {
-  title: "",
-  description: "",
-  icon: "briefcase",
-  image: "",
-  order: 0,
-  active: true,
-};
+const EMPTY = { title: "", description: "", icon: "briefcase", image: "", order: 0, active: true };
 
 const inp =
   "w-full px-3 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent";
@@ -49,34 +43,21 @@ export default function ServicesTable({ services }: { services: Service[] }) {
   const [editing, setEditing] = useState<Service | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const set = (k: string, v: unknown) => setForm((p) => ({ ...p, [k]: v }));
 
-  const openCreate = () => {
-    setForm(EMPTY);
-    setEditing(null);
-    setModal("create");
-    setError("");
-  };
-
+  const openCreate = () => { setForm(EMPTY); setEditing(null); setModal("create"); };
   const openEdit = (s: Service) => {
-    setForm({
-      title: s.title,
-      description: s.description,
-      icon: s.icon,
-      image: s.image ?? "",
-      order: s.order,
-      active: s.active,
-    });
+    setForm({ title: s.title, description: s.description, icon: s.icon, image: s.image ?? "", order: s.order, active: s.active });
     setEditing(s);
     setModal("edit");
-    setError("");
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this service?")) return;
+    const ok = await confirmDelete("Delete this service?", "It will be removed from the website.");
+    if (!ok) return;
     await fetch(`/api/admin/services/${id}`, { method: "DELETE" });
+    await toast("success", "Service deleted.");
     router.refresh();
   };
 
@@ -86,13 +67,13 @@ export default function ServicesTable({ services }: { services: Service[] }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...s, active: !s.active }),
     });
+    await toast("success", s.active ? "Service hidden." : "Service activated.");
     router.refresh();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
     const res = await fetch(
       modal === "edit" ? `/api/admin/services/${editing!.id}` : "/api/admin/services",
       {
@@ -103,10 +84,11 @@ export default function ServicesTable({ services }: { services: Service[] }) {
     );
     if (res.ok) {
       setModal(null);
+      await toast("success", modal === "edit" ? "Service updated." : "Service created.");
       router.refresh();
     } else {
       const d = await res.json();
-      setError(d.error || "Save failed");
+      await toast("error", d.error || "Save failed");
     }
     setSaving(false);
   };
@@ -115,15 +97,10 @@ export default function ServicesTable({ services }: { services: Service[] }) {
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-poppins font-bold text-2xl text-gray-800 dark:text-white">
-            Services
-          </h1>
+          <h1 className="font-poppins font-bold text-2xl text-gray-800 dark:text-white">Services</h1>
           <p className="text-gray-500 text-sm mt-1">{services.length} services total</p>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold font-poppins text-sm rounded-lg transition-colors"
-        >
+        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold font-poppins text-sm rounded-lg transition-colors">
           <Plus size={16} /> New Service
         </button>
       </div>
@@ -144,9 +121,7 @@ export default function ServicesTable({ services }: { services: Service[] }) {
               <tr key={s.id} className="border-b last:border-0 border-gray-50 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
-                    {s.image && (
-                      <img src={s.image} alt={s.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />
-                    )}
+                    {s.image && <img src={s.image} alt={s.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />}
                     <div>
                       <p className="font-semibold text-gray-800 dark:text-gray-100">{s.title}</p>
                       <p className="text-gray-400 text-xs truncate max-w-xs">{s.description}</p>
@@ -158,6 +133,7 @@ export default function ServicesTable({ services }: { services: Service[] }) {
                 <td className="px-5 py-3">
                   <button
                     onClick={() => handleToggleActive(s)}
+                    type="button"
                     className={cn(
                       "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors",
                       s.active
@@ -171,12 +147,8 @@ export default function ServicesTable({ services }: { services: Service[] }) {
                 </td>
                 <td className="px-5 py-3">
                   <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => openEdit(s)} className="p-1.5 text-gray-400 hover:text-gold-400 transition-colors" title="Edit">
-                      <Pencil size={15} />
-                    </button>
-                    <button onClick={() => handleDelete(s.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Delete">
-                      <Trash2 size={15} />
-                    </button>
+                    <button type="button" onClick={() => openEdit(s)} className="p-1.5 text-gray-400 hover:text-gold-400 transition-colors" title="Edit"><Pencil size={15} /></button>
+                    <button type="button" onClick={() => handleDelete(s.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 size={15} /></button>
                   </div>
                 </td>
               </tr>
@@ -189,67 +161,39 @@ export default function ServicesTable({ services }: { services: Service[] }) {
       </div>
 
       {modal && (
-        <AdminModal
-          title={modal === "edit" ? "Edit Service" : "New Service"}
-          onClose={() => setModal(null)}
-        >
+        <AdminModal title={modal === "edit" ? "Edit Service" : "New Service"} onClose={() => setModal(null)}>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-lg">
-                <AlertCircle size={14} /> {error}
-              </div>
-            )}
-
             <div>
               <label className={lbl}>Title *</label>
               <input className={inp} value={form.title} onChange={(e) => set("title", e.target.value)} required />
             </div>
-
             <div>
               <label className={lbl}>Description *</label>
-              <textarea className={inp} rows={3} value={form.description} onChange={(e) => set("description", e.target.value)} required />
+              <textarea title="Description" className={inp} rows={3} value={form.description} onChange={(e) => set("description", e.target.value)} required />
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={lbl}>Icon</label>
-                <select className={inp} value={form.icon} onChange={(e) => set("icon", e.target.value)}>
-                  {ICONS.map((i) => (
-                    <option key={i.value} value={i.value}>{i.label}</option>
-                  ))}
+                <select title="Icon" className={inp} value={form.icon} onChange={(e) => set("icon", e.target.value)}>
+                  {ICONS.map((i) => <option key={i.value} value={i.value}>{i.label}</option>)}
                 </select>
               </div>
               <div>
                 <label className={lbl}>Order</label>
-                <input type="number" className={inp} value={form.order} onChange={(e) => set("order", e.target.value)} />
+                <input title="Order" type="number" className={inp} value={form.order} onChange={(e) => set("order", e.target.value)} />
               </div>
             </div>
-
             <div>
               <label className={lbl}>Image URL</label>
-              <input className={inp} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="https://..." />
-              {form.image && (
-                <img src={form.image} alt="preview" className="mt-2 h-28 w-full object-cover rounded-lg" />
-              )}
+              <input title="Image URL" className={inp} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="https://..." />
+              {form.image && <img src={form.image} alt="preview" className="mt-2 h-28 w-full object-cover rounded-lg" />}
             </div>
-
             <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="active"
-                checked={form.active}
-                onChange={(e) => set("active", e.target.checked)}
-                className="w-4 h-4 accent-gold-400"
-              />
-              <label htmlFor="active" className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                Active (shown on website)
-              </label>
+              <input type="checkbox" id="active" checked={form.active} onChange={(e) => set("active", e.target.checked)} className="w-4 h-4 accent-gold-400" />
+              <label htmlFor="active" className="text-sm font-semibold text-gray-700 dark:text-gray-200">Active (shown on website)</label>
             </div>
-
             <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-700 mt-4">
-              <button type="button" onClick={() => setModal(null)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-800 transition-colors">
-                Cancel
-              </button>
+              <button type="button" onClick={() => setModal(null)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-800 transition-colors">Cancel</button>
               <button type="submit" disabled={saving} className="flex items-center gap-2 px-5 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold text-sm rounded-lg transition-colors disabled:opacity-60">
                 {saving && <Loader2 size={14} className="animate-spin" />}
                 {saving ? "Saving..." : "Save Service"}

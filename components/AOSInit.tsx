@@ -25,20 +25,12 @@ export default function AOSInit() {
               }
             });
           },
-          { threshold: 0.1, rootMargin: "0px 0px -80px 0px" }
+          { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
         );
 
         all.forEach((el) => {
-          const rect = el.getBoundingClientRect();
-          if (rect.top < window.innerHeight && rect.bottom > 0) {
-            el.classList.add("arx-in");
-          } else {
-            observer!.observe(el);
-          }
+          if (!el.classList.contains("arx-in")) observer!.observe(el);
         });
-
-        // js-ready added after in-viewport elements already have arx-in → no flash
-        document.body.classList.add("js-ready");
       }, 50);
     });
 

@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import AdminModal from "./AdminModal";
 import { cn } from "@/lib/utils";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Member = {
   id: number;
@@ -18,16 +19,7 @@ type Member = {
   active: boolean;
 };
 
-const EMPTY = {
-  name: "",
-  role: "",
-  bio: "",
-  photo: "",
-  linkedin: "",
-  twitter: "",
-  order: 0,
-  active: true,
-};
+const EMPTY = { name: "", role: "", bio: "", photo: "", linkedin: "", twitter: "", order: 0, active: true };
 
 const inp =
   "w-full px-3 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent";
@@ -39,43 +31,27 @@ export default function TeamTable({ members }: { members: Member[] }) {
   const [editing, setEditing] = useState<Member | null>(null);
   const [form, setForm] = useState<typeof EMPTY>(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const set = (k: string, v: unknown) => setForm((p) => ({ ...p, [k]: v }));
 
-  const openCreate = () => {
-    setForm(EMPTY);
-    setEditing(null);
-    setModal("create");
-    setError("");
-  };
-
+  const openCreate = () => { setForm(EMPTY); setEditing(null); setModal("create"); };
   const openEdit = (m: Member) => {
-    setForm({
-      name: m.name,
-      role: m.role,
-      bio: m.bio ?? "",
-      photo: m.photo ?? "",
-      linkedin: m.linkedin ?? "",
-      twitter: m.twitter ?? "",
-      order: m.order,
-      active: m.active,
-    });
+    setForm({ name: m.name, role: m.role, bio: m.bio ?? "", photo: m.photo ?? "", linkedin: m.linkedin ?? "", twitter: m.twitter ?? "", order: m.order, active: m.active });
     setEditing(m);
     setModal("edit");
-    setError("");
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this team member?")) return;
+    const ok = await confirmDelete("Delete team member?", "They will be removed from the website.");
+    if (!ok) return;
     await fetch(`/api/admin/team/${id}`, { method: "DELETE" });
+    await toast("success", "Team member deleted.");
     router.refresh();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
     const res = await fetch(
       modal === "edit" ? `/api/admin/team/${editing!.id}` : "/api/admin/team",
       {
@@ -86,10 +62,11 @@ export default function TeamTable({ members }: { members: Member[] }) {
     );
     if (res.ok) {
       setModal(null);
+      await toast("success", modal === "edit" ? "Member updated." : "Member added.");
       router.refresh();
     } else {
       const d = await res.json();
-      setError(d.error || "Save failed");
+      await toast("error", d.error || "Save failed");
     }
     setSaving(false);
   };
@@ -101,7 +78,7 @@ export default function TeamTable({ members }: { members: Member[] }) {
           <h1 className="font-poppins font-bold text-2xl text-gray-800 dark:text-white">Team Members</h1>
           <p className="text-gray-500 text-sm mt-1">{members.length} members · {members.filter(m => m.active).length} active</p>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold font-poppins text-sm rounded-lg transition-colors">
+        <button type="button" onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 font-bold font-poppins text-sm rounded-lg transition-colors">
           <Plus size={16} /> Add Member
         </button>
       </div>
@@ -144,8 +121,8 @@ export default function TeamTable({ members }: { members: Member[] }) {
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => openEdit(m)} className="p-1.5 text-gray-400 hover:text-gold-400 transition-colors" title="Edit"><Pencil size={15} /></button>
-                      <button onClick={() => handleDelete(m.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 size={15} /></button>
+                      <button type="button" onClick={() => openEdit(m)} className="p-1.5 text-gray-400 hover:text-gold-400 transition-colors" title="Edit"><Pencil size={15} /></button>
+                      <button type="button" onClick={() => handleDelete(m.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 size={15} /></button>
                     </div>
                   </td>
                 </tr>
@@ -161,39 +138,34 @@ export default function TeamTable({ members }: { members: Member[] }) {
       {modal && (
         <AdminModal title={modal === "edit" ? "Edit Member" : "Add Team Member"} onClose={() => setModal(null)}>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-lg">
-                <AlertCircle size={14} /> {error}
-              </div>
-            )}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={lbl}>Name *</label>
-                <input className={inp} value={form.name} onChange={(e) => set("name", e.target.value)} required />
+                <input title="Name" className={inp} value={form.name} onChange={(e) => set("name", e.target.value)} required />
               </div>
               <div>
                 <label className={lbl}>Role *</label>
-                <input className={inp} value={form.role} onChange={(e) => set("role", e.target.value)} required />
+                <input title="Role" className={inp} value={form.role} onChange={(e) => set("role", e.target.value)} required />
               </div>
               <div className="col-span-2">
                 <label className={lbl}>Bio</label>
-                <textarea className={inp} rows={3} value={form.bio} onChange={(e) => set("bio", e.target.value)} />
+                <textarea title="Bio" className={inp} rows={3} value={form.bio} onChange={(e) => set("bio", e.target.value)} />
               </div>
               <div className="col-span-2">
                 <label className={lbl}>Photo URL</label>
-                <input className={inp} value={form.photo} onChange={(e) => set("photo", e.target.value)} placeholder="/images/team/name.jpg" />
+                <input title="Photo URL" className={inp} value={form.photo} onChange={(e) => set("photo", e.target.value)} placeholder="/images/team/name.jpg" />
               </div>
               <div>
                 <label className={lbl}>LinkedIn URL</label>
-                <input className={inp} value={form.linkedin} onChange={(e) => set("linkedin", e.target.value)} placeholder="https://linkedin.com/in/..." />
+                <input title="LinkedIn URL" className={inp} value={form.linkedin} onChange={(e) => set("linkedin", e.target.value)} placeholder="https://linkedin.com/in/..." />
               </div>
               <div>
                 <label className={lbl}>Twitter URL</label>
-                <input className={inp} value={form.twitter} onChange={(e) => set("twitter", e.target.value)} placeholder="https://twitter.com/..." />
+                <input title="Twitter URL" className={inp} value={form.twitter} onChange={(e) => set("twitter", e.target.value)} placeholder="https://twitter.com/..." />
               </div>
               <div>
                 <label className={lbl}>Display Order</label>
-                <input type="number" className={inp} value={form.order} onChange={(e) => set("order", Number(e.target.value))} min={0} />
+                <input title="Display Order" type="number" className={inp} value={form.order} onChange={(e) => set("order", Number(e.target.value))} min={0} />
               </div>
               <div className="flex items-end pb-2.5">
                 <div className="flex items-center gap-3">

@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import AdminModal from "./AdminModal";
 import { cn } from "@/lib/utils";
+import { toast, confirmDelete } from "@/lib/notify";
 
 type Item = {
   id: number;
@@ -50,17 +51,10 @@ export default function PortfolioTable({ items }: { items: Item[] }) {
   const [editing, setEditing] = useState<Item | null>(null);
   const [form, setForm] = useState<typeof EMPTY>(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const set = (k: string, v: unknown) => setForm((p) => ({ ...p, [k]: v }));
 
-  const openCreate = () => {
-    setForm(EMPTY);
-    setEditing(null);
-    setModal("create");
-    setError("");
-  };
-
+  const openCreate = () => { setForm(EMPTY); setEditing(null); setModal("create"); };
   const openEdit = (item: Item) => {
     setForm({
       title: item.title,
@@ -77,19 +71,19 @@ export default function PortfolioTable({ items }: { items: Item[] }) {
     });
     setEditing(item);
     setModal("edit");
-    setError("");
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this portfolio item?")) return;
+    const ok = await confirmDelete("Delete portfolio item?", "This cannot be undone.");
+    if (!ok) return;
     await fetch(`/api/admin/portfolio/${id}`, { method: "DELETE" });
+    await toast("success", "Portfolio item deleted.");
     router.refresh();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
     const res = await fetch(
       modal === "edit" ? `/api/admin/portfolio/${editing!.id}` : "/api/admin/portfolio",
       {
@@ -100,10 +94,11 @@ export default function PortfolioTable({ items }: { items: Item[] }) {
     );
     if (res.ok) {
       setModal(null);
+      await toast("success", modal === "edit" ? "Project updated." : "Project added.");
       router.refresh();
     } else {
       const d = await res.json();
-      setError(d.error || "Save failed");
+      await toast("error", d.error || "Save failed");
     }
     setSaving(false);
   };
@@ -170,11 +165,6 @@ export default function PortfolioTable({ items }: { items: Item[] }) {
       {modal && (
         <AdminModal title={modal === "edit" ? "Edit Project" : "New Portfolio Item"} onClose={() => setModal(null)} wide>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-lg">
-                <AlertCircle size={14} /> {error}
-              </div>
-            )}
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
                 <label className={lbl}>Title *</label>
@@ -186,7 +176,7 @@ export default function PortfolioTable({ items }: { items: Item[] }) {
               </div>
               <div>
                 <label className={lbl}>Category *</label>
-                <select className={inp} value={form.category} onChange={(e) => set("category", e.target.value)} required>
+                <select title="Category" className={inp} value={form.category} onChange={(e) => set("category", e.target.value)} required>
                   <option value="">Select category</option>
                   {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>

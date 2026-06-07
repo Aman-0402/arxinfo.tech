@@ -1,6 +1,33 @@
+@import "toastr/build/toastr.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* SweetAlert2 theme overrides */
+.arx-swal-popup {
+  border-radius: 16px !important;
+  font-family: var(--font-inter, sans-serif) !important;
+}
+.arx-swal-title {
+  font-family: var(--font-poppins, sans-serif) !important;
+  font-weight: 700 !important;
+  color: #0A1F44 !important;
+}
+.swal2-icon.swal2-warning {
+  border-color: #C9A84C !important;
+  color: #C9A84C !important;
+}
+/* Toastr overrides */
+#toast-container > .toast {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12) !important;
+  opacity: 1 !important;
+}
+#toast-container > .toast-success { background-color: #0A1F44 !important; }
+#toast-container > .toast-error   { background-color: #dc2626 !important; }
+#toast-container > .toast-info    { background-color: #1d4ed8 !important; }
+#toast-container > .toast-warning { background-color: #C9A84C !important; color: #0A1F44 !important; }
 
 @layer base {
   :root {
@@ -21,18 +48,16 @@
   }
 }
 
-/* Scroll animations — scoped to .js-ready so SSR HTML is never hidden, no hydration mismatch */
-.js-ready [data-arx] {
-  opacity: 0;
-  transition-property: opacity, transform;
-  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  transition-duration: 700ms;
-}
-.js-ready [data-arx="fade-up"]    { transform: translateY(30px); }
-.js-ready [data-arx="fade-down"]  { transform: translateY(-30px); }
-.js-ready [data-arx="fade-right"] { transform: translateX(-30px); }
-.js-ready [data-arx="fade-left"]  { transform: translateX(30px); }
-.js-ready [data-arx].arx-in  { opacity: 1; transform: none; }
+/* Scroll animations — keyframe-based, no hiding gate, content always visible until animation fires */
+@keyframes arx-fade-up    { from { opacity: 0; transform: translateY(30px); }  to { opacity: 1; transform: none; } }
+@keyframes arx-fade-down  { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: none; } }
+@keyframes arx-fade-right { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: none; } }
+@keyframes arx-fade-left  { from { opacity: 0; transform: translateX(30px); }  to { opacity: 1; transform: none; } }
+
+[data-arx="fade-up"].arx-in    { animation: arx-fade-up    0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
+[data-arx="fade-down"].arx-in  { animation: arx-fade-down  0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
+[data-arx="fade-right"].arx-in { animation: arx-fade-right 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
+[data-arx="fade-left"].arx-in  { animation: arx-fade-left  0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both; }
 
 @layer components {
   .section-title {
