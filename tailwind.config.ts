@@ -9,7 +9,11 @@ const config: Config = {
   ],
   theme: {
     container: {
-      padding: "30px",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        lg: "1.875rem",
+      },
     },
     extend: {
       colors: {
