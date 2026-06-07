@@ -32,7 +32,7 @@ export default function PortfolioGrid({ items }: { items: PortfolioItem[] }) {
       {/* Filter tabs */}
       <div
         className="flex flex-wrap justify-center gap-3 mb-12"
-        data-aos="fade-up"
+        data-reveal="fade-up"
       >
         {categories.map((cat) => (
           <button

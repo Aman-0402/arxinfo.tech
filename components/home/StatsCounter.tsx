@@ -41,7 +41,7 @@ export default function StatsCounter() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map(({ icon: Icon, target, suffix, label, delay }) => (
-            <div key={label} className="text-center" data-aos="fade-up">
+            <div key={label} className="text-center" data-reveal="fade-up">
               <div className="w-14 h-14 bg-gold-400/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Icon size={26} className="text-gold-400" />
               </div>

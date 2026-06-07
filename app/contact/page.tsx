@@ -21,7 +21,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Contact Info */}
-            <div className="lg:col-span-2" data-aos="fade-right">
+            <div className="lg:col-span-2" data-reveal="fade-right">
               <div className="bg-navy-900 rounded-2xl p-8 text-white h-full flex flex-col">
                 <h3 className="font-poppins font-bold text-2xl mb-2">
                   Contact Information
@@ -104,7 +104,7 @@ export default function ContactPage() {
             </div>
 
             {/* Form */}
-            <div className="lg:col-span-3" data-aos="fade-left" data-aos-delay="100">
+            <div className="lg:col-span-3" data-reveal="fade-left" data-reveal-delay="100">
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 className="font-poppins font-bold text-2xl text-navy-900 dark:text-white mb-2">
                   Send Us a Message

@@ -51,7 +51,7 @@ export default function TestimonialsSection() {
     <section className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-14" data-aos="fade-up">
+        <div className="text-center mb-14" data-reveal="fade-up">
           <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
             Client Reviews
           </p>
@@ -65,8 +65,8 @@ export default function TestimonialsSection() {
           {testimonials.map(({ stars, text, name, company, delay }) => (
             <div
               key={name}
-              data-aos="fade-up"
-              data-aos-delay={delay}
+              data-reveal="fade-up"
+              data-reveal-delay={delay}
               className="bg-white dark:bg-gray-800 rounded-2xl p-7 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col"
             >
               <StarRating rating={stars} />

@@ -16,7 +16,7 @@ const clients = [
 export default function ClientsMarquee() {
   return (
     <section className="py-14 bg-gray-50 dark:bg-gray-900 overflow-hidden border-y border-gray-100 dark:border-gray-800">
-      <div className="container mx-auto px-4 mb-8 text-center" data-aos="fade-up">
+      <div className="container mx-auto px-4 mb-8 text-center" data-reveal="fade-up">
         <p className="text-gray-400 text-sm font-poppins uppercase tracking-widest">
           Trusted by businesses across India
         </p>

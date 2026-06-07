@@ -38,7 +38,7 @@ export default async function ServicesSection() {
     <section className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-14" data-aos="fade-up">
+        <div className="text-center mb-14" data-reveal="fade-up">
           <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
             What We Do
           </p>
@@ -55,8 +55,8 @@ export default async function ServicesSection() {
             return (
               <div
                 key={s.id}
-                data-aos="fade-up"
-                data-aos-delay={i * 50}
+                data-reveal="fade-up"
+                data-reveal-delay={i * 50}
                 className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-transparent hover:border-gold-400/30 transition-all duration-300"
               >
                 {/* Image */}
@@ -95,7 +95,7 @@ export default async function ServicesSection() {
         </div>
 
         {/* CTA */}
-        <div className="text-center" data-aos="fade-up">
+        <div className="text-center" data-reveal="fade-up">
           <Link
             href="/services"
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-navy-900 hover:bg-navy-800 dark:bg-gold-400 dark:hover:bg-gold-500 dark:text-navy-900 text-white font-bold font-poppins rounded transition-colors duration-200"
