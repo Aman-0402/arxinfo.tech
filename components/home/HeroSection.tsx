@@ -13,7 +13,7 @@ export default function HeroSection() {
         muted
         loop
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-20"
+        className="absolute inset-0 w-full h-full object-cover opacity-100"
         suppressHydrationWarning
       >
         <source src="/video/hero.mp4" type="video/mp4" />
