@@ -138,6 +138,24 @@ model Service {
   @@map("services")
 }
 
+model PricingPlan {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(150)
+  tagline      String   @db.VarChar(255)
+  price        String   @db.VarChar(50)
+  period       String   @db.VarChar(50)
+  badge        String?  @db.VarChar(100)
+  badgeVariant String   @default("gold") @map("badge_variant") @db.VarChar(20)
+  highlight    Boolean  @default(false)
+  features     String   @db.Text
+  buttonLabel  String   @default("Get Quote") @map("button_label") @db.VarChar(100)
+  order        Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("pricing_plans")
+}
+
 // ─── Exam Module ─────────────────────────────────────────────────────────────
 
 model ExamAdmin {

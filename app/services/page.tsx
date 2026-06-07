@@ -55,58 +55,23 @@ const devItems = [
   "REST & GraphQL API Development",
 ];
 
-const pricingPlans = [
-  {
-    name: "Starter",
-    tagline: "For startups & small businesses",
-    price: "₹15,000",
-    period: "onwards",
-    highlight: false,
-    features: [
-      "Business website (up to 5 pages)",
-      "Basic IT support (email)",
-      "Monthly performance report",
-      "SSL & security setup",
-      "1 month free maintenance",
-    ],
-  },
-  {
-    name: "Professional",
-    tagline: "For growing businesses",
-    price: "₹75,000",
-    period: "onwards",
-    highlight: true,
-    features: [
-      "Custom web / mobile application",
-      "Cloud deployment & setup",
-      "Security audit & hardening",
-      "Priority support (phone + email)",
-      "3 months free maintenance",
-      "Performance analytics dashboard",
-    ],
-  },
-  {
-    name: "Enterprise",
-    tagline: "For large organizations",
-    price: "Custom",
-    period: "quote",
-    highlight: false,
-    features: [
-      "Full IT infrastructure management",
-      "Dedicated development team",
-      "24/7 priority support",
-      "Multi-cloud architecture",
-      "Compliance & security consulting",
-      "Long-term SLA agreement",
-    ],
-  },
-];
+const BADGE_COLORS: Record<string, string> = {
+  gold: "bg-gold-400 text-navy-900",
+  green: "bg-green-500 text-white",
+  blue: "bg-blue-500 text-white",
+  red: "bg-red-500 text-white",
+  purple: "bg-purple-500 text-white",
+};
+
+function parseFeatures(raw: string): string[] {
+  try { return JSON.parse(raw); } catch { return []; }
+}
 
 export default async function ServicesPage() {
-  const services = await prisma.service.findMany({
-    where: { active: true },
-    orderBy: { order: "asc" },
-  });
+  const [services, pricingPlans] = await Promise.all([
+    prisma.service.findMany({ where: { active: true }, orderBy: { order: "asc" } }),
+    prisma.pricingPlan.findMany({ where: { active: true }, orderBy: { order: "asc" } }),
+  ]);
 
   return (
     <>
@@ -246,58 +211,65 @@ export default async function ServicesPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 items-start">
-            {pricingPlans.map(({ name, tagline, price, period, highlight, features }, i) => (
-              <div
-                key={name}
-                suppressHydrationWarning data-arx="fade-up"
-                data-arx-delay={i * 100}
-                className={`rounded-2xl p-8 ${
-                  highlight
-                    ? "bg-navy-900 text-white shadow-2xl ring-2 ring-gold-400 scale-105"
-                    : "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm"
-                }`}
-              >
-                {highlight && (
-                  <div className="text-xs font-bold font-poppins text-navy-900 bg-gold-400 px-3 py-1 rounded-full inline-block mb-4">
-                    Most Popular
+          {pricingPlans.length === 0 ? (
+            <p className="text-center text-gray-400 py-10">No pricing plans configured yet.</p>
+          ) : (
+            <div className={`grid gap-6 items-start ${pricingPlans.length === 1 ? "max-w-sm mx-auto" : pricingPlans.length === 2 ? "md:grid-cols-2 max-w-3xl mx-auto" : "md:grid-cols-3"}`}>
+              {pricingPlans.map((plan, i) => {
+                const features = parseFeatures(plan.features);
+                return (
+                  <div
+                    key={plan.id}
+                    suppressHydrationWarning data-arx="fade-up"
+                    data-arx-delay={i * 100}
+                    className={`rounded-2xl p-8 ${
+                      plan.highlight
+                        ? "bg-navy-900 text-white shadow-2xl ring-2 ring-gold-400 scale-105"
+                        : "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm"
+                    }`}
+                  >
+                    {plan.badge && (
+                      <div className={`text-xs font-bold font-poppins px-3 py-1 rounded-full inline-block mb-4 ${BADGE_COLORS[plan.badgeVariant] ?? "bg-gold-400 text-navy-900"}`}>
+                        {plan.badge}
+                      </div>
+                    )}
+                    <h3 className={`font-poppins font-bold text-2xl mb-1 ${plan.highlight ? "text-white" : "text-navy-900 dark:text-white"}`}>
+                      {plan.name}
+                    </h3>
+                    <p className={`text-sm mb-6 ${plan.highlight ? "text-gray-300" : "text-gray-500 dark:text-gray-400"}`}>
+                      {plan.tagline}
+                    </p>
+                    <div className="mb-6">
+                      <span className={`font-poppins font-bold text-3xl ${plan.highlight ? "text-gold-400" : "text-navy-900 dark:text-white"}`}>
+                        {plan.price}
+                      </span>
+                      <span className={`text-sm ml-1 ${plan.highlight ? "text-gray-300" : "text-gray-500"}`}>
+                        /{plan.period}
+                      </span>
+                    </div>
+                    <ul className="space-y-3 mb-8">
+                      {features.map((f) => (
+                        <li key={f} className={`flex items-start gap-2 text-sm ${plan.highlight ? "text-gray-200" : "text-gray-600 dark:text-gray-300"}`}>
+                          <Check size={15} className="text-gold-400 shrink-0 mt-0.5" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href="/contact"
+                      className={`block text-center py-3 rounded font-bold font-poppins text-sm transition-colors duration-200 ${
+                        plan.highlight
+                          ? "bg-gold-400 hover:bg-gold-500 text-navy-900"
+                          : "border-2 border-navy-900 dark:border-gold-400 text-navy-900 dark:text-gold-400 hover:bg-navy-900 hover:text-white dark:hover:bg-gold-400 dark:hover:text-navy-900"
+                      }`}
+                    >
+                      {plan.buttonLabel} <ArrowRight size={14} className="inline ml-1" />
+                    </Link>
                   </div>
-                )}
-                <h3 className={`font-poppins font-bold text-2xl mb-1 ${highlight ? "text-white" : "text-navy-900 dark:text-white"}`}>
-                  {name}
-                </h3>
-                <p className={`text-sm mb-6 ${highlight ? "text-gray-300" : "text-gray-500 dark:text-gray-400"}`}>
-                  {tagline}
-                </p>
-                <div className="mb-6">
-                  <span className={`font-poppins font-bold text-3xl ${highlight ? "text-gold-400" : "text-navy-900 dark:text-white"}`}>
-                    {price}
-                  </span>
-                  <span className={`text-sm ml-1 ${highlight ? "text-gray-300" : "text-gray-500"}`}>
-                    /{period}
-                  </span>
-                </div>
-                <ul className="space-y-3 mb-8">
-                  {features.map((f) => (
-                    <li key={f} className={`flex items-start gap-2 text-sm ${highlight ? "text-gray-200" : "text-gray-600 dark:text-gray-300"}`}>
-                      <Check size={15} className="text-gold-400 shrink-0 mt-0.5" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/contact"
-                  className={`block text-center py-3 rounded font-bold font-poppins text-sm transition-colors duration-200 ${
-                    highlight
-                      ? "bg-gold-400 hover:bg-gold-500 text-navy-900"
-                      : "border-2 border-navy-900 dark:border-gold-400 text-navy-900 dark:text-gold-400 hover:bg-navy-900 hover:text-white dark:hover:bg-gold-400 dark:hover:text-navy-900"
-                  }`}
-                >
-                  Get Quote <ArrowRight size={14} className="inline ml-1" />
-                </Link>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
