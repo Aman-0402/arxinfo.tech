@@ -3,7 +3,7 @@ import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ConditionalFooter from "@/components/ConditionalFooter";
 import Preloader from "@/components/Preloader";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
@@ -125,7 +125,7 @@ export default function RootLayout({
           <Preloader />
           <Navbar />
           <main>{children}</main>
-          <Footer />
+          <ConditionalFooter />
           <WhatsAppButton />
           <BackToTop />
         </Providers>

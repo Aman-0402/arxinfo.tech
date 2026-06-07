@@ -92,9 +92,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   );
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex flex-col shrink-0">{Sidebar}</div>
+      <div className="hidden lg:block fixed left-0 top-0 h-screen w-64 z-30">{Sidebar}</div>
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
@@ -110,7 +110,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       )}
 
       {/* Main */}
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+      <div className="flex flex-col min-h-screen lg:pl-64">
         {/* Top bar */}
         <header className="flex items-center gap-4 px-5 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
           <button
@@ -126,7 +126,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
   );
