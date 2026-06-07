@@ -32,6 +32,7 @@ export default async function ServicesSection() {
   const services = await prisma.service.findMany({
     where: { active: true },
     orderBy: { order: "asc" },
+    take: 3,
   });
 
   return (

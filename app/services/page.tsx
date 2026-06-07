@@ -1,19 +1,26 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
-  Server,
+  Globe,
+  Smartphone,
+  Briefcase,
   Cloud,
-  Code2,
-  Layers,
-  ShieldCheck,
+  TrendingUp,
   GraduationCap,
-  CheckCircle2,
+  Code,
+  Shield,
+  Database,
+  Settings,
+  Server,
   Laptop2,
-  ArrowRight,
+  CheckCircle2,
   Check,
+  ArrowRight,
 } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import CTASection from "@/components/home/CTASection";
+import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -21,56 +28,18 @@ export const metadata: Metadata = {
     "ARX Infotech provides managed IT services, cloud migration, custom software development, cybersecurity, digital marketing, and software training.",
 };
 
-const services = [
-  {
-    icon: Server,
-    title: "Managed IT Services",
-    description:
-      "Complete managed IT support including infrastructure monitoring, system optimisation, server management, maintenance, and 24/7 performance enhancement.",
-    features: ["Server Monitoring", "Network Management", "Backup & Recovery", "System Optimisation"],
-    delay: 0,
-  },
-  {
-    icon: Cloud,
-    title: "Cloud Migration & Hosting",
-    description:
-      "Seamless cloud migration to AWS, Azure, and GCP with hosting setup, deployment strategies, and ongoing cloud operations management.",
-    features: ["Cloud Assessment", "Migration Planning", "AWS / Azure / GCP", "Ongoing Management"],
-    delay: 50,
-  },
-  {
-    icon: Code2,
-    title: "Custom Software Development",
-    description:
-      "Secure, scalable web applications, automation tools, ERPs, CRMs, and business management systems built with modern frameworks.",
-    features: ["Web Applications", "ERP & CRM Systems", "API Development", "Mobile Apps"],
-    delay: 100,
-  },
-  {
-    icon: Layers,
-    title: "Product Development",
-    description:
-      "Full-cycle product engineering from UI/UX wireframing through development, QA testing, deployment, and long-term scalability planning.",
-    features: ["UI/UX Design", "Agile Development", "QA Testing", "DevOps & CI/CD"],
-    delay: 150,
-  },
-  {
-    icon: ShieldCheck,
-    title: "Cybersecurity Solutions",
-    description:
-      "Security audits, penetration testing, vulnerability assessments, server hardening, and endpoint protection to ensure business continuity.",
-    features: ["Security Audits", "Pen Testing", "Server Hardening", "Endpoint Protection"],
-    delay: 200,
-  },
-  {
-    icon: GraduationCap,
-    title: "Academic Solutions",
-    description:
-      "Admission portals, attendance systems, LMS integrations, online exam platforms, and automation dashboards for educational institutions.",
-    features: ["Admission Portal", "Attendance System", "LMS Integration", "Online Exams"],
-    delay: 250,
-  },
-];
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  globe: Globe,
+  smartphone: Smartphone,
+  briefcase: Briefcase,
+  cloud: Cloud,
+  trending: TrendingUp,
+  graduation: GraduationCap,
+  code: Code,
+  shield: Shield,
+  database: Database,
+  settings: Settings,
+};
 
 const infraItems = [
   "Server Monitoring & Management",
@@ -133,7 +102,12 @@ const pricingPlans = [
   },
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await prisma.service.findMany({
+    where: { active: true },
+    orderBy: { order: "asc" },
+  });
+
   return (
     <>
       <PageHero
@@ -141,46 +115,57 @@ export default function ServicesPage() {
         subtitle="End-to-end IT services, custom software development, cloud solutions, and academic automation platforms."
       />
 
-      {/* 6 Service Cards */}
+      {/* All Service Cards — DB driven */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto">
           <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               What We Offer
             </p>
-            <h2 className="section-title mb-4">Core Service Categories</h2>
+            <h2 className="section-title mb-4">All Service Categories</h2>
             <p className="section-subtitle">
               Our expertise covers complete IT support and digital transformation.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map(({ icon: Icon, title, description, features, delay }) => (
-              <div
-                key={title}
-                suppressHydrationWarning data-arx="fade-up"
-                data-arx-delay={delay}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-7 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-gold-400/40 hover:shadow-md transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 bg-gold-400/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-gold-400 transition-colors duration-300">
-                  <Icon size={22} className="text-gold-400 group-hover:text-navy-900 transition-colors duration-300" />
+            {services.map((s, i) => {
+              const Icon = ICON_MAP[s.icon] ?? Briefcase;
+              return (
+                <div
+                  key={s.id}
+                  suppressHydrationWarning data-arx="fade-up"
+                  data-arx-delay={i * 50}
+                  className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-transparent hover:border-gold-400/30 transition-all duration-300"
+                >
+                  <div className="relative h-48 bg-navy-900 overflow-hidden">
+                    {s.image ? (
+                      <Image
+                        src={s.image}
+                        alt={s.title}
+                        fill
+                        className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-navy-800 to-navy-900" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy-900/70 to-transparent" />
+                    <div className="absolute bottom-4 left-5 w-12 h-12 bg-gold-400 rounded-xl flex items-center justify-center shadow-lg">
+                      <Icon size={22} className="text-navy-900" />
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-poppins font-bold text-lg text-navy-900 dark:text-white mb-2">
+                      {s.title}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                      {s.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="font-poppins font-bold text-lg text-navy-900 dark:text-white mb-3">
-                  {title}
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-5">
-                  {description}
-                </p>
-                <ul className="space-y-1.5">
-                  {features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                      <CheckCircle2 size={14} className="text-gold-400 shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -320,4 +305,3 @@ export default function ServicesPage() {
     </>
   );
 }
-
