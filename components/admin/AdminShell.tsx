@@ -12,6 +12,9 @@ import {
   Users,
   Briefcase,
   Layers,
+  BarChart3,
+  Building2,
+  MessageSquare,
   Menu,
   X,
   LogOut,
@@ -27,6 +30,9 @@ const navItems = [
   { href: "/admin/contacts", label: "Contacts", icon: Mail, exact: false },
   { href: "/admin/team", label: "Team Members", icon: Users, exact: false },
   { href: "/admin/portfolio", label: "Portfolio", icon: Briefcase, exact: false },
+  { href: "/admin/stats", label: "Stats Counter", icon: BarChart3, exact: false },
+  { href: "/admin/clients", label: "Clients", icon: Building2, exact: false },
+  { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquare, exact: false },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

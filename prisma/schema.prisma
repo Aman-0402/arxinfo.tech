@@ -85,6 +85,46 @@ model PortfolioItem {
   @@map("portfolio_items")
 }
 
+model Stat {
+  id        Int      @id @default(autoincrement())
+  icon      String   @default("users") @db.VarChar(100)
+  target    Int
+  suffix    String   @db.VarChar(20)
+  label     String   @db.VarChar(150)
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("stats")
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  logo      String?  @db.VarChar(500)
+  website   String?  @db.VarChar(500)
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("clients")
+}
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(150)
+  company   String   @db.VarChar(255)
+  role      String?  @db.VarChar(150)
+  text      String   @db.Text
+  stars     Float    @default(5)
+  avatar    String?  @db.VarChar(500)
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("testimonials")
+}
+
 model Service {
   id          Int      @id @default(autoincrement())
   title       String   @db.VarChar(255)

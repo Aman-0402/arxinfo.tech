@@ -1,30 +1,5 @@
-"use client";
-
-import { Star } from "lucide-react";
-
-const testimonials = [
-  {
-    stars: 5,
-    text: "ARX Infotech transformed our infrastructure. Downtime dropped and performance improved dramatically. Highly professional team.",
-    name: "Ellen Downing",
-    company: "Wrode Co.",
-    delay: 0,
-  },
-  {
-    stars: 4.5,
-    text: "Outstanding security audit and quick remediation suggestions. They identified vulnerabilities we didn't even know existed.",
-    name: "Douglas Galveston",
-    company: "Sitwell Financial",
-    delay: 100,
-  },
-  {
-    stars: 4,
-    text: "Their team is proactive and always available. A fantastic technology partner — they feel like an extension of our own team.",
-    name: "Kian Graham",
-    company: "Henlow Express",
-    delay: 200,
-  },
-];
+import { Star, Quote } from "lucide-react";
+import { prisma } from "@/lib/db";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -32,13 +7,13 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          size={16}
+          size={15}
           className={
             i <= Math.floor(rating)
               ? "fill-gold-400 text-gold-400"
               : i - 0.5 === rating
               ? "fill-gold-400/50 text-gold-400"
-              : "text-gray-200 fill-gray-200"
+              : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
           }
         />
       ))}
@@ -46,11 +21,17 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export default function TestimonialsSection() {
+export default async function TestimonialsSection() {
+  const testimonials = await prisma.testimonial.findMany({
+    where: { active: true },
+    orderBy: { order: "asc" },
+  });
+
+  if (testimonials.length === 0) return null;
+
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        {/* Header */}
         <div className="text-center mb-14" data-reveal="fade-up">
           <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
             Client Reviews
@@ -61,25 +42,41 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map(({ stars, text, name, company, delay }) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((t, i) => (
             <div
-              key={name}
+              key={t.id}
               data-reveal="fade-up"
-              data-reveal-delay={delay}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-7 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col"
+              data-reveal-delay={i * 100}
+              className="relative bg-white dark:bg-gray-800 rounded-2xl p-7 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col hover:shadow-lg hover:border-gold-400/30 transition-all duration-300"
             >
-              <StarRating rating={stars} />
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 flex-1">
-                &ldquo;{text}&rdquo;
+              {/* Quote icon */}
+              <div className="absolute top-6 right-6 text-gold-400/20">
+                <Quote size={40} />
+              </div>
+
+              <StarRating rating={t.stars} />
+
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 flex-1 text-sm">
+                &ldquo;{t.text}&rdquo;
               </p>
-              <div>
-                <p className="font-poppins font-bold text-navy-900 dark:text-white text-sm">
-                  {name}
-                </p>
-                <p className="text-gold-400 text-xs font-semibold mt-0.5">
-                  {company}
-                </p>
+
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-50 dark:border-gray-700">
+                {t.avatar ? (
+                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-navy-900 flex items-center justify-center shrink-0">
+                    <span className="font-poppins font-bold text-xs text-gold-400">
+                      {t.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <div>
+                  <p className="font-poppins font-bold text-navy-900 dark:text-white text-sm">{t.name}</p>
+                  <p className="text-gold-400 text-xs font-semibold">
+                    {t.role ? `${t.role}, ` : ""}{t.company}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
