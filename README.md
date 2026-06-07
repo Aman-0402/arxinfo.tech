@@ -10,24 +10,35 @@ Official website for **ARX Infotech**, an IT services and tech solutions provide
 
 | Layer | Tech |
 |-------|------|
-| Markup | HTML5 |
-| Styling | Bootstrap 5.3, Tailwind CSS (CDN), Font Awesome 6, Bootstrap Icons |
-| Scripting | Vanilla JS (`assets/js/main.js`) |
-| Backend | PHP (contact form, verify portal) |
-| Exam Module | PHP + MySQL |
+| Framework | Next.js 15.5 (App Router, Turbopack) |
+| Runtime | Node.js 22 (ESM) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 3.4 |
+| Fonts | Poppins + Inter via `next/font/google` |
+| Animations | Framer Motion 12 + custom IntersectionObserver |
+| Notifications | SweetAlert2 + Toastr.js |
+| Forms | React Hook Form 7 |
+| DB | MySQL via Prisma 6 ORM |
+| Cache | Redis via ioredis |
+| Dark mode | next-themes |
+| Icons | Lucide React |
 
 ---
 
 ## Pages
 
-| File | Description |
-|------|-------------|
-| `index.html` | Home — hero, services overview, testimonials, CTA |
-| `about.html` | About ARX Infotech |
-| `services.html` | Full services listing |
-| `contact.html` | Contact form |
-| `verify.php` | Certificate / document verification portal |
-| `contact.php` | Form handler (POST endpoint) |
+| Route | Description |
+|-------|-------------|
+| `/` | Home — hero video, services (3), stats, clients, testimonials, CTA |
+| `/about` | Who We Are, Vision/Mission, Core Strength, CTA |
+| `/services` | All services (DB-driven), What We Deliver, pricing, CTA |
+| `/portfolio` | Portfolio items with client-side category filter |
+| `/blog` | Published blog listing |
+| `/blog/[slug]` | Single post with markdown renderer |
+| `/team` | Team cards from DB |
+| `/contact` | Contact form + Google Maps |
+| `/verify` | Certificate verification portal |
+| `/admin` | Admin dashboard (auth-protected) |
 
 ---
 
@@ -35,57 +46,77 @@ Official website for **ARX Infotech**, an IT services and tech solutions provide
 
 ```
 arxinfo.tech/
-├── index.html
-├── about.html
-├── services.html
-├── contact.html
-├── contact.php
-├── verify.php
-├── sitemap.xml
-├── .htaccess
-├── assets/
-│   ├── css/style.css
-│   ├── js/main.js
-│   ├── images/         # logo, favicons, og-banner
-│   └── video/hero.mp4
-└── exam/               # Online proctored exam module (PHP + MySQL)
-    ├── index.php
-    ├── database.sql
-    ├── config.php
-    ├── admin/
-    └── candidate/
+├── app/                    # Next.js App Router pages + API routes
+│   ├── globals.css         # Tailwind + scroll animation keyframes
+│   ├── layout.tsx          # Root layout
+│   ├── page.tsx            # Home page
+│   ├── admin/              # Admin dashboard (shell + login)
+│   └── api/                # REST API routes
+├── components/
+│   ├── Navbar.tsx          # Transparent → glassmorphism on scroll
+│   ├── PageHero.tsx        # Full-opacity video banner for inner pages
+│   ├── admin/              # Admin CRUD table components
+│   └── home/               # Home section components
+├── lib/
+│   ├── db.ts               # Singleton PrismaClient
+│   ├── notify.ts           # SweetAlert2 + Toastr helpers
+│   └── admin-auth.ts       # Session cookie auth
+├── prisma/
+│   ├── schema.prisma       # 9 public models + exam models
+│   └── seed.ts             # DESTRUCTIVE reseed — never run on production
+├── public/
+│   ├── images/             # logo.png, favicons, og-banner.png
+│   └── video/hero.mp4      # Hero background video
+├── middleware.ts           # Protects /admin/* routes
+├── tailwind.config.ts      # Navy + Gold design tokens
+├── .env                    # DATABASE_URL (Prisma CLI — gitignored)
+└── .env.local              # DATABASE_URL + ADMIN_* + REDIS_URL (gitignored)
 ```
-
----
-
-## Exam Module Setup
-
-Located in `exam/`. Standalone PHP application for online proctored exams.
-
-1. Import `exam/database.sql` into MySQL
-2. Update `exam/config.php` with DB credentials
-3. Run: `php -S localhost:8000 -t exam/`
-4. Open `http://localhost:8000`
-
-**Default admin login:** `admin` / `admin123` — change immediately in production.
-
-**Voucher system:** Candidates need a valid voucher to start exams. Demo voucher: `DEMO-2026`.
 
 ---
 
 ## Local Development
 
-Static site — open any HTML file directly in browser, or use a local server:
+```powershell
+# Install dependencies
+npm install
 
-```bash
-# Python
-python -m http.server 8080
+# Set up env files
+# .env        → DATABASE_URL=mysql://...
+# .env.local  → DATABASE_URL=... + ADMIN_USERNAME + ADMIN_PASSWORD + ADMIN_SESSION_SECRET
 
-# Node
-npx serve .
+# Push schema to DB
+npm run db:push
+
+# Seed database (DESTRUCTIVE — dev only)
+npm run db:seed
+
+# Start dev server → http://localhost:3000
+npm run dev
 ```
 
-PHP pages (`verify.php`, `contact.php`, `exam/`) require a PHP server.
+---
+
+## Admin Panel
+
+- URL: `/admin/login`
+- Credentials set via `ADMIN_USERNAME` + `ADMIN_PASSWORD` in `.env.local`
+- HTTP-only session cookie auth
+- Manages: Blog, Services, Certificates, Contacts, Team, Portfolio, Stats, Clients, Testimonials
+
+---
+
+## Environment Variables
+
+| Variable | File | Purpose |
+|----------|------|---------|
+| `DATABASE_URL` | `.env` + `.env.local` | MySQL connection string |
+| `ADMIN_USERNAME` | `.env.local` | Admin login username |
+| `ADMIN_PASSWORD` | `.env.local` | Admin login password |
+| `ADMIN_SESSION_SECRET` | `.env.local` | Session cookie value |
+| `REDIS_URL` | `.env.local` | Redis (default: `redis://localhost:6379`) |
+
+Both env files are gitignored — never commit either.
 
 ---
 
@@ -93,4 +124,4 @@ PHP pages (`verify.php`, `contact.php`, `exam/`) require a PHP server.
 
 - **Email:** info@arxinfo.tech
 - **Phone:** +91 8317818107
-- **Address:** 1st Floor, 150, Panchita, Bongaon-Bagdh Rd. Street, Kolkata, India 743235
+- **Address:** 1st Floor, 150, Panchita, Bongaon-Bagdh Rd, Kolkata 743235, India

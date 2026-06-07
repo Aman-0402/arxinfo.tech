@@ -101,7 +101,7 @@ arxinfo.tech/
 │           ├── clients/route.ts + [id]/route.ts
 │           └── testimonials/route.ts + [id]/route.ts
 ├── components/
-│   ├── Navbar.tsx                     # Fixed nav, hidden on /admin/*, shrink-on-scroll, active link, no DarkModeToggle
+│   ├── Navbar.tsx                     # Fixed nav, transparent default, glassmorphism on scroll, links right-aligned, hidden on /admin/*
 │   ├── Footer.tsx                     # 4-col footer, dynamic year, always navy-900
 │   ├── ConditionalFooter.tsx          # Client wrapper — hides Footer on /admin/* routes
 │   ├── Preloader.tsx                  # Navy screen + logo + bouncing dots, fades at 1.8s
@@ -110,7 +110,7 @@ arxinfo.tech/
 │   ├── DarkModeToggle.tsx             # Sun/Moon toggle via next-themes
 │   ├── AOSInit.tsx                    # Custom IntersectionObserver scroll reveal (no AOS lib)
 │   ├── providers.tsx                  # ThemeProvider wrapper
-│   ├── PageHero.tsx                   # Reusable page banner: navy bg, video, title+subtitle
+│   ├── PageHero.tsx                   # Reusable page banner: full-opacity video bg, directional gradient overlay, tall (pt-48 pb-32), title+subtitle
 │   ├── admin/
 │   │   ├── AdminShell.tsx             # "use client", fixed sidebar nav + topbar + logout
 │   │   ├── AdminModal.tsx             # Shared modal wrapper (wide prop for large forms)
@@ -130,7 +130,7 @@ arxinfo.tech/
 │   ├── portfolio/
 │   │   └── PortfolioGrid.tsx          # "use client", category filter tabs + project cards
 │   └── home/
-│       ├── HeroSection.tsx            # Full-screen video bg, Framer Motion entry, 2 CTAs
+│       ├── HeroSection.tsx            # Full-screen full-opacity video bg, directional gradient overlay, Framer Motion entry, 2 CTAs
 │       ├── WhyChooseSection.tsx        # Checklist left + navy stat box right
 │       ├── ServicesSection.tsx         # DB-driven: first 3 services (take:3), image cards, icon badge overlay, "View All" → /services
 │       ├── StatsCounter.tsx            # Server wrapper — fetches from DB, passes to client
@@ -295,7 +295,7 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 <p className="section-subtitle">Descriptive text below heading.</p>
 ```
 
-**Navbar:** fixed top, hidden on `/admin/*`, navy bg, shrinks on scroll >50px. Active link = gold. No dark mode toggle. Logo `h-8 md:h-12`, natural dimensions `445×102`. No brand text beside logo.
+**Navbar:** fixed top, hidden on `/admin/*`. Default: `bg-transparent`. On scroll >50px: `bg-navy-900/70 backdrop-blur-xl` (glassmorphism) + border + shadow. Nav links right-aligned (`ml-auto`), `gap-3`. No dark mode toggle. Logo `h-8 md:h-12`, natural dims `445×102`. No brand text beside logo.
 **Buttons:** `.btn-primary` (gold bg, navy text) / `.btn-outline` (gold border).
 **Footer:** always navy-900, hidden on `/admin/*` via `ConditionalFooter`.
 **WhatsApp button:** bottom-right `right-6 bottom-24`, hidden on `/admin/*`.
