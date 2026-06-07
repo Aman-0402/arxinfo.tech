@@ -53,7 +53,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left */}
-            <div data-reveal="fade-right">
+            <div data-arx="fade-right">
               <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
                 Our Story
               </p>
@@ -89,7 +89,7 @@ export default function AboutPage() {
             </div>
 
             {/* Right — Vision + Mission */}
-            <div data-reveal="fade-left" data-reveal-delay="100">
+            <div data-arx="fade-left" data-arx-delay="100">
               <div className="bg-navy-900 rounded-2xl p-8 text-white shadow-2xl">
                 <div className="mb-8">
                   <h3 className="font-poppins font-bold text-2xl mb-3 text-gold-400">
@@ -121,7 +121,7 @@ export default function AboutPage() {
       {/* Core Strength */}
       <section className="py-20 bg-white dark:bg-gray-950">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-reveal="fade-up">
+          <div className="text-center mb-14" data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               Why We Stand Out
             </p>
@@ -135,8 +135,8 @@ export default function AboutPage() {
             {strengths.map(({ icon: Icon, title, description, delay }) => (
               <div
                 key={title}
-                data-reveal="fade-up"
-                data-reveal-delay={delay}
+                data-arx="fade-up"
+                data-arx-delay={delay}
                 className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-7 border border-gray-100 dark:border-gray-700 text-center group hover:border-gold-400/40 transition-colors duration-300"
               >
                 <div className="w-14 h-14 bg-gold-400/10 rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-gold-400 transition-colors duration-300">

@@ -12,7 +12,7 @@ export default async function ClientsMarquee() {
   return (
     <section className="py-16 bg-white dark:bg-gray-950 overflow-hidden border-y border-gray-100 dark:border-gray-800">
       {/* Header */}
-      <div className="text-center mb-10" data-reveal="fade-up">
+      <div className="text-center mb-10" data-arx="fade-up">
         <p className="text-gold-400 font-semibold font-poppins text-xs uppercase tracking-[0.2em] mb-2">
           Our Clients
         </p>

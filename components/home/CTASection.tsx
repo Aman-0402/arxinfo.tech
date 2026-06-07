@@ -8,7 +8,7 @@ export default function CTASection() {
     <section className="py-20 bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4">
         <div
-          data-reveal="fade-up"
+          data-arx="fade-up"
           className="bg-navy-900 rounded-3xl px-8 py-16 text-center relative overflow-hidden"
         >
           {/* Decorative circles */}

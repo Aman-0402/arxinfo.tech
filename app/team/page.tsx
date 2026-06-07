@@ -25,7 +25,7 @@ export default async function TeamPage() {
 
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-reveal="fade-up">
+          <div className="text-center mb-14" data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               The People Behind ARX
             </p>
@@ -44,8 +44,8 @@ export default async function TeamPage() {
               return (
                 <div
                   key={member.id}
-                  data-reveal="fade-up"
-                  data-reveal-delay={i * 100}
+                  data-arx="fade-up"
+                  data-arx-delay={i * 100}
                   className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-300"
                 >
                   {/* Avatar */}

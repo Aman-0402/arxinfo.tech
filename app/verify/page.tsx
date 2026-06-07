@@ -20,14 +20,14 @@ export default function VerifyPage() {
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           {/* Trust badge */}
-          <div className="flex justify-center mb-10" data-reveal="fade-up">
+          <div className="flex justify-center mb-10" data-arx="fade-up">
             <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-5 py-2.5 shadow-sm text-sm text-gray-600 dark:text-gray-300">
               <ShieldCheck size={16} className="text-gold-400" />
               All certificates are stored in ARX Infotech&apos;s secure database
             </div>
           </div>
 
-          <div data-reveal="fade-up" data-reveal-delay="50">
+          <div data-arx="fade-up" data-arx-delay="50">
             <VerifyForm />
           </div>
         </div>

@@ -220,23 +220,28 @@ Returns 401 if cookie missing or doesn't match `ADMIN_SESSION_SECRET`.
 AOS library removed — replaced with custom solution to avoid SSR hydration mismatches.
 
 **Attributes:**
-- `data-reveal="fade-up|fade-down|fade-left|fade-right"` — animation direction
-- `data-reveal-delay="100"` — delay in milliseconds
+- `data-arx="fade-up|fade-down|fade-left|fade-right"` — animation direction
+- `data-arx-delay="100"` — delay in milliseconds
 
 **How it works (`AOSInit.tsx`):**
 1. `setTimeout(fn, 0)` defers to macrotask queue — runs after React hydration
-2. In-viewport elements get `reveal-animate` class immediately (no flash)
+2. In-viewport elements get `arx-in` class immediately (no flash)
 3. `js-ready` class added to `<body>` — activates CSS hiding for below-fold elements
-4. `IntersectionObserver` watches remaining elements, adds `reveal-animate` on scroll
+4. `IntersectionObserver` watches remaining elements, adds `arx-in` on scroll
 5. Runs on every `pathname` change (re-scans on navigation)
 
 **CSS (`globals.css`):**
 ```css
-.js-ready [data-reveal] { opacity: 0; transition: opacity 700ms, transform 700ms; }
-.js-ready [data-reveal="fade-up"] { transform: translateY(30px); }
+.js-ready [data-arx] { opacity: 0; transition: opacity 700ms, transform 700ms; }
+.js-ready [data-arx="fade-up"] { transform: translateY(30px); }
 /* etc. */
-.js-ready [data-reveal].reveal-animate { opacity: 1; transform: none; }
+.js-ready [data-arx].arx-in { opacity: 1; transform: none; }
 ```
+
+**Note:** Attribute renamed twice due to browser extension interference:
+- `data-aos` → `data-reveal` → `data-arx` (extension targeted each prior name)
+- Class: `aos-animate` → `reveal-animate` → `arx-in`
+- Never use `data-aos`, `data-reveal`, `aos-animate`, or `reveal-animate` — extension will add the class before React hydrates, causing mismatch.
 
 ---
 

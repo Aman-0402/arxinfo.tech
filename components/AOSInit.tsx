@@ -12,17 +12,17 @@ export default function AOSInit() {
     // setTimeout(fn, 0) = macrotask queue → guaranteed after React hydration completes.
     // Runs on every pathname change so navigated pages animate correctly.
     const timer = setTimeout(() => {
-      const all = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+      const all = Array.from(document.querySelectorAll<HTMLElement>("[data-arx]"));
 
       // Pre-animate elements already in viewport (prevents flash from hidden → visible)
       all.forEach((el) => {
         const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight && rect.bottom > 0) {
-          el.classList.add("reveal-animate");
+          el.classList.add("arx-in");
         }
       });
 
-      // Enable CSS hiding — in-viewport elements already have reveal-animate
+      // Enable CSS hiding — in-viewport elements already have arx-in
       document.body.classList.add("js-ready");
 
       observer = new IntersectionObserver(
@@ -30,8 +30,8 @@ export default function AOSInit() {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const el = entry.target as HTMLElement;
-              const delay = parseInt(el.getAttribute("data-reveal-delay") || "0", 10);
-              setTimeout(() => el.classList.add("reveal-animate"), delay);
+              const delay = parseInt(el.getAttribute("data-arx-delay") || "0", 10);
+              setTimeout(() => el.classList.add("arx-in"), delay);
               observer!.unobserve(el);
             }
           });
@@ -40,7 +40,7 @@ export default function AOSInit() {
       );
 
       all.forEach((el) => {
-        if (!el.classList.contains("reveal-animate")) observer!.observe(el);
+        if (!el.classList.contains("arx-in")) observer!.observe(el);
       });
     }, 0);
 

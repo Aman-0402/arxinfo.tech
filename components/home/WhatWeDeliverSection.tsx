@@ -21,7 +21,7 @@ export default function WhatWeDeliverSection() {
     <section className="py-20 bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-14" data-reveal="fade-up">
+        <div className="text-center mb-14" data-arx="fade-up">
           <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
             Our Expertise
           </p>
@@ -35,7 +35,7 @@ export default function WhatWeDeliverSection() {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* IT Infrastructure */}
           <div
-            data-reveal="fade-right"
+            data-arx="fade-right"
             className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 border border-gray-100 dark:border-gray-700"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -62,8 +62,8 @@ export default function WhatWeDeliverSection() {
 
           {/* Dev & Automation */}
           <div
-            data-reveal="fade-left"
-            data-reveal-delay="100"
+            data-arx="fade-left"
+            data-arx-delay="100"
             className="bg-navy-900 rounded-2xl p-8"
           >
             <div className="flex items-center gap-3 mb-4">
