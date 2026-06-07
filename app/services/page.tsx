@@ -144,7 +144,7 @@ export default function ServicesPage() {
       {/* 6 Service Cards */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-arx="fade-up">
+          <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               What We Offer
             </p>
@@ -158,7 +158,7 @@ export default function ServicesPage() {
             {services.map(({ icon: Icon, title, description, features, delay }) => (
               <div
                 key={title}
-                data-arx="fade-up"
+                suppressHydrationWarning data-arx="fade-up"
                 data-arx-delay={delay}
                 className="bg-white dark:bg-gray-800 rounded-2xl p-7 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-gold-400/40 hover:shadow-md transition-all duration-300 group"
               >
@@ -188,7 +188,7 @@ export default function ServicesPage() {
       {/* What We Deliver */}
       <section className="py-20 bg-white dark:bg-gray-950">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-arx="fade-up">
+          <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               In Detail
             </p>
@@ -199,7 +199,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-6">
-            <div data-arx="fade-right" className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 border border-gray-100 dark:border-gray-700">
+            <div suppressHydrationWarning data-arx="fade-right" className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 border border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-gold-400/10 rounded-lg flex items-center justify-center">
                   <Server size={20} className="text-gold-400" />
@@ -222,7 +222,7 @@ export default function ServicesPage() {
               </ul>
             </div>
 
-            <div data-arx="fade-left" data-arx-delay="100" className="bg-navy-900 rounded-2xl p-8">
+            <div suppressHydrationWarning data-arx="fade-left" data-arx-delay="100" className="bg-navy-900 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-gold-400/10 rounded-lg flex items-center justify-center">
                   <Laptop2 size={20} className="text-gold-400" />
@@ -251,7 +251,7 @@ export default function ServicesPage() {
       {/* Pricing */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-arx="fade-up">
+          <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               Packages
             </p>
@@ -265,7 +265,7 @@ export default function ServicesPage() {
             {pricingPlans.map(({ name, tagline, price, period, highlight, features }, i) => (
               <div
                 key={name}
-                data-arx="fade-up"
+                suppressHydrationWarning data-arx="fade-up"
                 data-arx-delay={i * 100}
                 className={`rounded-2xl p-8 ${
                   highlight

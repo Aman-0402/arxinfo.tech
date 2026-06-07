@@ -35,7 +35,7 @@ export default async function BlogPage() {
 
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-arx="fade-up">
+          <div className="text-center mb-14" suppressHydrationWarning data-arx="fade-up">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               Latest from ARX
             </p>
@@ -46,7 +46,7 @@ export default async function BlogPage() {
             {posts.map((post, i) => (
               <article
                 key={post.id}
-                data-arx="fade-up"
+                suppressHydrationWarning data-arx="fade-up"
                 data-arx-delay={i * 100}
                 className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col"
               >

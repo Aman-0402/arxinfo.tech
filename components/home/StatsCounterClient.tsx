@@ -43,7 +43,7 @@ export default function StatsCounterClient({ stats }: { stats: Stat[] }) {
           {stats.map((s, i) => {
             const Icon = ICON_MAP[s.icon] ?? Users;
             return (
-              <div key={s.id} className="text-center" data-arx="fade-up">
+              <div key={s.id} className="text-center" suppressHydrationWarning data-arx="fade-up">
                 <div className="w-14 h-14 bg-gold-400/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <Icon size={26} className="text-gold-400" />
                 </div>

@@ -23,7 +23,7 @@ export default function WhyChooseSection() {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left */}
-          <div data-arx="fade-right">
+          <div suppressHydrationWarning data-arx="fade-right">
             <p className="text-gold-400 font-semibold font-poppins text-sm uppercase tracking-wider mb-3">
               Why ARX Infotech
             </p>
@@ -53,7 +53,7 @@ export default function WhyChooseSection() {
           </div>
 
           {/* Right — navy highlight box */}
-          <div data-arx="fade-left" data-arx-delay="100">
+          <div suppressHydrationWarning data-arx="fade-left" data-arx-delay="100">
             <div className="bg-navy-900 rounded-2xl p-8 text-white shadow-2xl">
               <h3 className="font-poppins font-bold text-2xl mb-3">
                 We Build Future-Ready Systems
