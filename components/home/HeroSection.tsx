@@ -20,7 +20,7 @@ export default function HeroSection() {
       </video>
 
       {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-navy-900/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-navy-900/85 via-navy-900/50 to-navy-900/10" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto pt-24 pb-16">

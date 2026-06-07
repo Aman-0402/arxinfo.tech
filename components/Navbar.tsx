@@ -39,8 +39,8 @@ export default function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-navy-900/95 backdrop-blur-md shadow-lg py-2 md:py-3"
-          : "bg-navy-900 py-3 md:py-5"
+          ? "bg-navy-900/70 backdrop-blur-xl border-b border-white/10 shadow-lg py-2 md:py-3"
+          : "bg-transparent py-3 md:py-5"
       )}
     >
       <div className="container mx-auto flex items-center justify-between">
@@ -57,7 +57,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden lg:flex items-center gap-1">
+        <ul className="hidden lg:flex items-center gap-3 ml-auto">
           {navLinks.map((link) => (
             <li key={link.href}>
               <Link
@@ -83,16 +83,15 @@ export default function Navbar() {
           </li>
         </ul>
 
-        {/* Right controls */}
-        <div className="flex items-center gap-3">
-          <button
-            className="lg:hidden text-white p-1"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        {/* Mobile hamburger */}
+        <button
+          type="button"
+          className="lg:hidden text-white p-1 ml-auto"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
       {/* Mobile menu */}
