@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import DarkModeToggle from "./DarkModeToggle";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -50,13 +49,11 @@ export default function Navbar() {
           <Image
             src="/images/logo.png"
             alt="ARX Infotech"
-            width={40}
-            height={40}
-            className="w-auto h-10"
+            width={445}
+            height={102}
+            className="h-10 w-auto"
+            priority
           />
-          <span className="font-poppins font-bold text-gold-400 text-lg hidden sm:block">
-            ARX Infotech
-          </span>
         </Link>
 
         {/* Desktop nav */}
@@ -88,7 +85,6 @@ export default function Navbar() {
 
         {/* Right controls */}
         <div className="flex items-center gap-3">
-          <DarkModeToggle />
           <button
             className="lg:hidden text-white p-1"
             onClick={() => setMenuOpen(!menuOpen)}
