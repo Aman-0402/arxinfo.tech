@@ -33,7 +33,7 @@ export default function HeroSection() {
             className="inline-flex items-center gap-2 bg-gold-400/10 border border-gold-400/30 text-gold-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-6"
           >
             <span className="w-2 h-2 bg-gold-400 rounded-full animate-pulse" />
-            Trusted IT Partner in Kolkata
+            Trusted IT Partner
           </motion.div>
 
           {/* Headline */}
