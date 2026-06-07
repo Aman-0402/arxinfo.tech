@@ -133,7 +133,7 @@ arxinfo.tech/
 │   ├── portfolio/
 │   │   └── PortfolioGrid.tsx          # "use client", category filter tabs + project cards
 │   └── home/
-│       ├── HeroSection.tsx            # Full-screen full-opacity video bg, directional gradient overlay, Framer Motion entry, 2 CTAs
+│       ├── HeroSection.tsx            # Full-screen full-opacity video bg, directional gradient overlay, Framer Motion entry, 2 CTAs. Badge text: "Trusted IT Partner" (no location suffix)
 │       ├── WhyChooseSection.tsx        # Checklist left + navy stat box right
 │       ├── ServicesSection.tsx         # DB-driven: first 3 services (take:3), image cards, icon badge overlay, "View All" → /services
 │       ├── StatsCounter.tsx            # Server wrapper — fetches from DB, passes to client
@@ -152,14 +152,14 @@ arxinfo.tech/
 │   └── notify.ts                      # toast() (Toastr) + confirmDelete() + confirmAction() (SweetAlert2)
 ├── middleware.ts                      # Protects /admin/* → redirect to /admin/login (Edge-safe)
 ├── prisma/
-│   ├── schema.prisma                  # 13 models: Contact, Certificate, BlogPost, TeamMember,
-│   │                                  # PortfolioItem, Service, Stat, Client, Testimonial,
+│   ├── schema.prisma                  # 14 models: Contact, Certificate, BlogPost, TeamMember,
+│   │                                  # PortfolioItem, Service, Stat, Client, Testimonial, PricingPlan,
 │   │                                  # ExamAdmin, ExamQuestion, ExamCandidate, ExamResult, ExamVoucher
 │   ├── seed.ts                        # Full reseed (DESTRUCTIVE) — never run on production
 │   ├── seed-services.ts               # One-shot: seeds 6 services
 │   └── seed-content.ts                # One-shot: seeds stats, clients, testimonials
 ├── public/
-│   ├── images/                        # logo.png, favicons, og-banner.png
+│   ├── images/                        # logo.png, ARX.png (Preloader logo), favicons, og-banner.png
 │   └── video/hero.mp4                 # Hero background video
 ├── next.config.ts                     # remotePatterns: allow all https images
 ├── tailwind.config.ts                 # Navy + Gold colors, font vars, marquee keyframes, container padding (1rem→1.5rem→3.75rem responsive)
@@ -272,6 +272,7 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 | Stat | stats | icon, target, suffix, label, order, active |
 | Client | clients | name, logo, website, order, active |
 | Testimonial | testimonials | name, company, role, text, stars, avatar, order, active |
+| PricingPlan | pricing_plans | name, tagline, price, period, badge, badgeVariant, highlight, features (JSON string), buttonLabel, order, active |
 | ExamAdmin | exam_admins | username, password (bcrypt) |
 | ExamQuestion | exam_questions | question, optionA–D, correctOption |
 | ExamCandidate | exam_candidates | name, email |
