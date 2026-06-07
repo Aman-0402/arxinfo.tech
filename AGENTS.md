@@ -63,7 +63,7 @@ arxinfo.tech/
 │   ├── sitemap.ts                     # Dynamic sitemap: static routes + published blog slugs
 │   ├── robots.ts                      # robots.txt: allow all, disallow /api/
 │   ├── about/page.tsx                 # Who We Are, Vision/Mission, Core Strength, CTA
-│   ├── services/page.tsx              # 6 service cards, What We Deliver, 3-tier pricing, CTA
+│   ├── services/page.tsx              # DB-driven: all active service cards (image style), What We Deliver, 3-tier pricing, CTA
 │   ├── contact/page.tsx               # Info card + ContactForm + Google Maps embed
 │   ├── verify/page.tsx                # Trust badge + VerifyForm
 │   ├── team/page.tsx                  # Team cards from DB (initials avatar + LinkedIn)
@@ -101,7 +101,7 @@ arxinfo.tech/
 │           ├── clients/route.ts + [id]/route.ts
 │           └── testimonials/route.ts + [id]/route.ts
 ├── components/
-│   ├── Navbar.tsx                     # Fixed nav, hidden on /admin/*, shrink-on-scroll, active link
+│   ├── Navbar.tsx                     # Fixed nav, hidden on /admin/*, shrink-on-scroll, active link, no DarkModeToggle
 │   ├── Footer.tsx                     # 4-col footer, dynamic year, always navy-900
 │   ├── ConditionalFooter.tsx          # Client wrapper — hides Footer on /admin/* routes
 │   ├── Preloader.tsx                  # Navy screen + logo + bouncing dots, fades at 1.8s
@@ -132,7 +132,7 @@ arxinfo.tech/
 │   └── home/
 │       ├── HeroSection.tsx            # Full-screen video bg, Framer Motion entry, 2 CTAs
 │       ├── WhyChooseSection.tsx        # Checklist left + navy stat box right
-│       ├── ServicesSection.tsx         # DB-driven: image cards, icon badge overlay, hover zoom
+│       ├── ServicesSection.tsx         # DB-driven: first 3 services (take:3), image cards, icon badge overlay, "View All" → /services
 │       ├── StatsCounter.tsx            # Server wrapper — fetches from DB, passes to client
 │       ├── StatsCounterClient.tsx      # "use client" — animated counters (Framer useInView)
 │       ├── WhatWeDeliverSection.tsx    # 2-col: IT Infra card + Dev/Automation card
@@ -159,7 +159,7 @@ arxinfo.tech/
 │   ├── images/                        # logo.png, favicons, og-banner.png
 │   └── video/hero.mp4                 # Hero background video
 ├── next.config.ts                     # remotePatterns: allow all https images
-├── tailwind.config.ts                 # Navy + Gold colors, font vars, marquee + marquee-reverse keyframes
+├── tailwind.config.ts                 # Navy + Gold colors, font vars, marquee keyframes, container padding (1rem→1.5rem→3.75rem responsive)
 ├── tsconfig.json                      # strict, @/* alias → ./
 ├── postcss.config.mjs
 ├── .env                               # DATABASE_URL — read by Prisma CLI only (gitignored)
@@ -295,7 +295,7 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 <p className="section-subtitle">Descriptive text below heading.</p>
 ```
 
-**Navbar:** fixed top, hidden on `/admin/*`, navy bg, shrinks on scroll >50px. Active link = gold.
+**Navbar:** fixed top, hidden on `/admin/*`, navy bg, shrinks on scroll >50px. Active link = gold. No dark mode toggle. Logo `h-8 md:h-12`, natural dimensions `445×102`. No brand text beside logo.
 **Buttons:** `.btn-primary` (gold bg, navy text) / `.btn-outline` (gold border).
 **Footer:** always navy-900, hidden on `/admin/*` via `ConditionalFooter`.
 **WhatsApp button:** bottom-right `right-6 bottom-24`, hidden on `/admin/*`.
@@ -321,6 +321,7 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 - **Scroll animations:** use `data-arx="fade-up"` and `data-arx-delay="100"` — never `data-aos` or `data-reveal`
 - **Notifications:** use `toast()` and `confirmDelete()` from `@/lib/notify` — never native `alert()`/`confirm()`
 - **Images:** use `next/image` for local; `<img>` tags acceptable for admin-managed external URLs
+- **Section containers:** use `container mx-auto` — do NOT add `px-4`; responsive padding comes from `tailwind.config.ts` container config (16px→24px→60px)
 
 ---
 
