@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import Navbar from "@/components/Navbar";
 import ConditionalFooter from "@/components/ConditionalFooter";
+import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
@@ -125,7 +126,7 @@ export default function RootLayout({
           <Preloader />
           <Navbar />
           <main>{children}</main>
-          <ConditionalFooter />
+          <ConditionalFooter><Footer /></ConditionalFooter>
           <WhatsAppButton />
           <BackToTop />
         </Providers>
