@@ -62,7 +62,7 @@ arxinfo.tech/
 │   ├── notify.ts           # SweetAlert2 + Toastr helpers
 │   └── admin-auth.ts       # Session cookie auth
 ├── prisma/
-│   ├── schema.prisma       # 9 public models + exam models
+│   ├── schema.prisma       # 11 public models (incl. PricingPlan, SiteContact) + exam models
 │   └── seed.ts             # DESTRUCTIVE reseed — never run on production
 ├── public/
 │   ├── images/             # logo.png, favicons, og-banner.png
@@ -102,7 +102,7 @@ npm run dev
 - URL: `/admin/login`
 - Credentials set via `ADMIN_USERNAME` + `ADMIN_PASSWORD` in `.env.local`
 - HTTP-only session cookie auth
-- Manages: Blog, Services, Certificates, Contacts, Team, Portfolio, Stats, Clients, Testimonials
+- Manages: Blog, Services, Pricing Plans, Certificates, Contacts, Team, Portfolio, Stats, Clients, Testimonials, Site Settings (contact info)
 
 ---
 

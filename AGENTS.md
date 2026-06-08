@@ -64,7 +64,7 @@ arxinfo.tech/
 │   ├── robots.ts                      # robots.txt: allow all, disallow /api/
 │   ├── about/page.tsx                 # Who We Are, Vision/Mission, Core Strength, CTA
 │   ├── services/page.tsx              # DB-driven: all active service cards + DB-driven pricing plans (PricingPlan model), What We Deliver, CTA
-│   ├── contact/page.tsx               # Info card + ContactForm + Google Maps embed
+│   ├── contact/page.tsx               # async, contact info from DB (SiteContact) with fallback, ContactForm, Google Maps embed
 │   ├── verify/page.tsx                # Trust badge + VerifyForm
 │   ├── team/page.tsx                  # Team cards from DB (initials avatar + LinkedIn)
 │   ├── portfolio/page.tsx             # Portfolio items with client-side category filter
@@ -85,7 +85,8 @@ arxinfo.tech/
 │   │       ├── stats/page.tsx
 │   │       ├── clients/page.tsx
 │   │       ├── testimonials/page.tsx
-│   │       └── pricing/page.tsx
+│   │       ├── pricing/page.tsx
+│   │       └── settings/page.tsx      # Site Settings: SiteContactForm
 │   └── api/
 │       ├── contact/route.ts           # POST → prisma.contact.create()
 │       ├── verify/route.ts            # GET ?id= → prisma.certificate.findUnique()
@@ -101,7 +102,8 @@ arxinfo.tech/
 │           ├── stats/route.ts + [id]/route.ts
 │           ├── clients/route.ts + [id]/route.ts
 │           ├── testimonials/route.ts + [id]/route.ts
-│           └── pricing/route.ts + [id]/route.ts
+│           ├── pricing/route.ts + [id]/route.ts
+│           └── contact-info/route.ts  # GET + PUT (upsert id=1) for SiteContact
 ├── components/
 │   ├── Navbar.tsx                     # Fixed nav, transparent default, glassmorphism on scroll, links right-aligned, hidden on /admin/*
 │   ├── Footer.tsx                     # async server component, 4-col footer, contact info from DB (SiteContact) with fallback
@@ -125,7 +127,8 @@ arxinfo.tech/
 │   │   ├── StatsTable.tsx             # Stats CRUD: icon, target, suffix, label
 │   │   ├── ClientsTable.tsx           # Clients CRUD: logo image or initials badge, marquee toggle
 │   │   ├── TestimonialsTable.tsx      # Testimonials CRUD: star rating, avatar, active toggle
-│   │   └── PricingTable.tsx           # Pricing CRUD: name, tagline, price, period, badge label + color, highlight toggle, features (newline textarea → JSON), button label, order, active
+│   │   ├── PricingTable.tsx           # Pricing CRUD: name, tagline, price, period, badge label + color, highlight toggle, features (newline textarea → JSON), button label, order, active
+│   │   └── SiteContactForm.tsx        # "use client" form: address, phone, email, whatsapp, mapEmbed → PUT /api/admin/contact-info
 │   ├── contact/
 │   │   └── ContactForm.tsx            # React Hook Form → POST /api/contact
 │   ├── verify/
@@ -152,14 +155,14 @@ arxinfo.tech/
 │   └── notify.ts                      # toast() (Toastr) + confirmDelete() + confirmAction() (SweetAlert2)
 ├── middleware.ts                      # Protects /admin/* → redirect to /admin/login (Edge-safe)
 ├── prisma/
-│   ├── schema.prisma                  # 14 models: Contact, Certificate, BlogPost, TeamMember,
+│   ├── schema.prisma                  # 15 models: Contact, Certificate, BlogPost, TeamMember,
 │   │                                  # PortfolioItem, Service, Stat, Client, Testimonial, PricingPlan,
-│   │                                  # ExamAdmin, ExamQuestion, ExamCandidate, ExamResult, ExamVoucher
+│   │                                  # SiteContact, ExamAdmin, ExamQuestion, ExamCandidate, ExamResult, ExamVoucher
 │   ├── seed.ts                        # Full reseed (DESTRUCTIVE) — never run on production
 │   ├── seed-services.ts               # One-shot: seeds 6 services
 │   └── seed-content.ts                # One-shot: seeds stats, clients, testimonials
 ├── public/
-│   ├── images/                        # logo.png, ARX.png (Preloader logo), favicons, og-banner.png
+│   ├── images/                        # logo.png (used in Navbar + Preloader + Footer), favicons, og-banner.png
 │   └── video/hero.mp4                 # Hero background video
 ├── next.config.ts                     # remotePatterns: allow all https images
 ├── tailwind.config.ts                 # Navy + Gold colors, font vars, marquee keyframes, container padding (1rem→1.5rem→3.75rem responsive)
@@ -199,6 +202,7 @@ arxinfo.tech/
 | Clients | /admin/clients | Building2 |
 | Testimonials | /admin/testimonials | MessageSquare |
 | Pricing Plans | /admin/pricing | DollarSign |
+| Site Settings | /admin/settings | Settings |
 
 ### Admin sections status
 | Section | Features | Status |
@@ -215,6 +219,7 @@ arxinfo.tech/
 | Clients (marquee) | CRUD, logo URL or initials badge, show/hide | ✅ Done |
 | Testimonials | CRUD, star rating (0.5 step), avatar, role | ✅ Done |
 | Pricing Plans | CRUD, badge label + color variant, highlight (navy card), features textarea, button label, order, active | ✅ Done |
+| Site Settings | Single-record form: address, phone, email, whatsapp, mapEmbed — drives footer + contact page | ✅ Done |
 
 ### Admin API guard
 All admin API routes use `isAdminAuthenticated(req)` from `lib/admin-api-guard.ts`.
@@ -273,6 +278,7 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 | Client | clients | name, logo, website, order, active |
 | Testimonial | testimonials | name, company, role, text, stars, avatar, order, active |
 | PricingPlan | pricing_plans | name, tagline, price, period, badge, badgeVariant, highlight, features (JSON string), buttonLabel, order, active |
+| SiteContact | site_contact | address, phone, email, whatsapp, mapEmbed — single row (id=1), upserted from admin |
 | ExamAdmin | exam_admins | username, password (bcrypt) |
 | ExamQuestion | exam_questions | question, optionA–D, correctOption |
 | ExamCandidate | exam_candidates | name, email |
