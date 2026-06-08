@@ -156,6 +156,18 @@ model PricingPlan {
   @@map("pricing_plans")
 }
 
+model SiteContact {
+  id        Int      @id @default(autoincrement())
+  address   String   @db.Text
+  phone     String   @db.VarChar(50)
+  email     String   @db.VarChar(150)
+  whatsapp  String?  @db.VarChar(50)
+  mapEmbed  String?  @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_contact")
+}
+
 // ─── Exam Module ─────────────────────────────────────────────────────────────
 
 model ExamAdmin {

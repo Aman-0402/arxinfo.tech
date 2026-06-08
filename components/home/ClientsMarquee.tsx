@@ -4,10 +4,9 @@ export default async function ClientsMarquee() {
   const clients = await prisma.client.findMany({ where: { active: true }, orderBy: { order: "asc" } });
   if (clients.length === 0) return null;
 
-  const doubled = [...clients, ...clients];
-  const half = Math.ceil(clients.length / 2);
-  const row1 = [...clients.slice(0, half), ...clients.slice(0, half)];
-  const row2 = [...clients.slice(half), ...clients.slice(half)];
+  const copies = Math.max(1, Math.ceil(12 / clients.length));
+  const base = Array(copies).fill(clients).flat() as typeof clients;
+  const doubled = [...base, ...base];
 
   return (
     <section className="py-16 bg-white dark:bg-gray-950 overflow-hidden border-y border-gray-100 dark:border-gray-800">

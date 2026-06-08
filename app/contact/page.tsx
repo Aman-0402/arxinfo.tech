@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Mail, Phone, MapPin, MessageSquare, PhoneCall } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/contact/ContactForm";
+import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -9,7 +10,23 @@ export const metadata: Metadata = {
     "Get in touch with ARX Infotech for IT services, software development, cloud solutions, and digital transformation consulting.",
 };
 
-export default function ContactPage() {
+const FALLBACK = {
+  address: "1st Floor, 150, Panchita\nBongaon-Bagdh Rd, Kolkata\nWest Bengal 743235, India",
+  phone: "+91 8317818107",
+  email: "info@arxinfo.tech",
+  whatsapp: "918317818107",
+  mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3669.6834814546705!2d88.81107472738992!3d23.108679827119495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff33b7cd38ff83%3A0x57962577744a60e5!2sARX%20InfoTech!5e0!3m2!1sen!2sin!4v1770559633327!5m2!1sen!2sin",
+};
+
+export default async function ContactPage() {
+  const raw = await prisma.siteContact.findFirst().catch(() => null);
+  const contact = {
+    address: raw?.address ?? FALLBACK.address,
+    phone: raw?.phone ?? FALLBACK.phone,
+    email: raw?.email ?? FALLBACK.email,
+    whatsapp: raw?.whatsapp ?? FALLBACK.whatsapp,
+    mapEmbed: raw?.mapEmbed ?? FALLBACK.mapEmbed,
+  };
   return (
     <>
       <PageHero
@@ -39,10 +56,10 @@ export default function ContactPage() {
                     <div>
                       <p className="text-xs text-gray-400 mb-0.5">Email</p>
                       <a
-                        href="mailto:info@arxinfo.tech"
+                        href={`mailto:${contact.email}`}
                         className="text-white hover:text-gold-400 transition-colors text-sm font-medium"
                       >
-                        info@arxinfo.tech
+                        {contact.email}
                       </a>
                     </div>
                   </div>
@@ -54,10 +71,10 @@ export default function ContactPage() {
                     <div>
                       <p className="text-xs text-gray-400 mb-0.5">Phone</p>
                       <a
-                        href="tel:+918317818107"
+                        href={`tel:${contact.phone.replace(/\s/g, "")}`}
                         className="text-white hover:text-gold-400 transition-colors text-sm font-medium"
                       >
-                        +91 8317818107
+                        {contact.phone}
                       </a>
                     </div>
                   </div>
@@ -68,10 +85,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-400 mb-0.5">Address</p>
-                      <p className="text-white text-sm font-medium leading-relaxed">
-                        1st Floor, 150, Panchita<br />
-                        Bongaon-Bagdh Rd, Kolkata<br />
-                        West Bengal 743235, India
+                      <p className="text-white text-sm font-medium leading-relaxed whitespace-pre-line">
+                        {contact.address}
                       </p>
                     </div>
                   </div>
@@ -83,7 +98,7 @@ export default function ContactPage() {
                   </p>
                   <div className="flex gap-3">
                     <a
-                      href="https://wa.me/918317818107"
+                      href={`https://wa.me/${contact.whatsapp}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#25D366] hover:bg-[#20BA5A] text-white text-sm font-bold rounded transition-colors duration-200"
@@ -92,7 +107,7 @@ export default function ContactPage() {
                       WhatsApp
                     </a>
                     <a
-                      href="tel:+918317818107"
+                      href={`tel:${contact.phone.replace(/\s/g, "")}`}
                       className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gold-400 hover:bg-gold-500 text-navy-900 text-sm font-bold rounded transition-colors duration-200"
                     >
                       <PhoneCall size={15} />
@@ -124,7 +139,7 @@ export default function ContactPage() {
         <div className="container mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3669.6834814546705!2d88.81107472738992!3d23.108679827119495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff33b7cd38ff83%3A0x57962577744a60e5!2sARX%20InfoTech!5e0!3m2!1sen!2sin!4v1770559633327!5m2!1sen!2sin"
+              src={contact.mapEmbed}
               width="100%"
               height="380"
               style={{ border: 0 }}

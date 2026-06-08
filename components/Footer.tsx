@@ -1,6 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { prisma } from "@/lib/db";
+
+const FALLBACK = {
+  address: "1st Floor, 150, Panchita, Bongaon-Bagdh Rd, Kolkata 743235",
+  phone: "+91 8317818107",
+  email: "info@arxinfo.tech",
+};
 
 const quickLinks = [
   { href: "/", label: "Home" },
@@ -22,7 +29,14 @@ const services = [
   "Software Training",
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const info = await prisma.siteContact.findFirst().catch(() => null);
+  const contact = {
+    address: info?.address ?? FALLBACK.address,
+    phone: info?.phone ?? FALLBACK.phone,
+    email: info?.email ?? FALLBACK.email,
+  };
+
   return (
     <footer className="bg-navy-900 text-white pt-16 pb-6">
       <div className="container mx-auto">
@@ -33,13 +47,10 @@ export default function Footer() {
               <Image
                 src="/images/logo.png"
                 alt="ARX Infotech"
-                width={40}
-                height={40}
-                className="w-auto h-10"
+                width={445}
+                height={102}
+                className="h-10 w-auto"
               />
-              <span className="font-poppins font-bold text-gold-400 text-lg">
-                ARX Infotech
-              </span>
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed mb-5">
               Leading IT services company in Kolkata delivering innovative
@@ -110,26 +121,24 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex gap-3 text-sm text-gray-300">
                 <MapPin size={16} className="text-gold-400 shrink-0 mt-0.5" />
-                <span>
-                  1st Floor, 150, Panchita, Bongaon-Bagdh Rd, Kolkata 743235
-                </span>
+                <span>{contact.address}</span>
               </li>
               <li>
                 <a
-                  href="tel:+918317818107"
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
                   className="flex gap-3 text-sm text-gray-300 hover:text-gold-400 transition-colors duration-200"
                 >
                   <Phone size={16} className="text-gold-400 shrink-0" />
-                  +91 8317818107
+                  {contact.phone}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@arxinfo.tech"
+                  href={`mailto:${contact.email}`}
                   className="flex gap-3 text-sm text-gray-300 hover:text-gold-400 transition-colors duration-200"
                 >
                   <Mail size={16} className="text-gold-400 shrink-0" />
-                  info@arxinfo.tech
+                  {contact.email}
                 </a>
               </li>
             </ul>
@@ -144,4 +153,3 @@ export default function Footer() {
     </footer>
   );
 }
-

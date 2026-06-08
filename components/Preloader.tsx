@@ -66,7 +66,7 @@ export default function Preloader() {
               className="w-14 h-14 relative"
             >
               <Image
-                src="/images/ARX.png"
+                src="/images/logo.png"
                 alt="ARX Infotech"
                 fill
                 className="object-contain"

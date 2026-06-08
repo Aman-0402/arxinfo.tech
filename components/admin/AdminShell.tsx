@@ -16,6 +16,7 @@ import {
   Building2,
   MessageSquare,
   DollarSign,
+  Settings,
   Menu,
   X,
   LogOut,
@@ -35,6 +36,7 @@ const navItems = [
   { href: "/admin/clients", label: "Clients", icon: Building2, exact: false },
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquare, exact: false },
   { href: "/admin/pricing", label: "Pricing Plans", icon: DollarSign, exact: false },
+  { href: "/admin/settings", label: "Site Settings", icon: Settings, exact: false },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
