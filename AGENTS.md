@@ -104,9 +104,9 @@ arxinfo.tech/
 │           └── pricing/route.ts + [id]/route.ts
 ├── components/
 │   ├── Navbar.tsx                     # Fixed nav, transparent default, glassmorphism on scroll, links right-aligned, hidden on /admin/*
-│   ├── Footer.tsx                     # 4-col footer, dynamic year, always navy-900
+│   ├── Footer.tsx                     # async server component, 4-col footer, contact info from DB (SiteContact) with fallback
 │   ├── ConditionalFooter.tsx          # Client wrapper — hides Footer on /admin/* routes
-│   ├── Preloader.tsx                  # Navy screen + ARX.png logo + spinning gold arc + glow rings + bottom progress bar, fades at 1.8s. No text label.
+│   ├── Preloader.tsx                  # Navy screen + logo.png + spinning gold arc + glow rings + bottom progress bar, fades at 1.8s
 │   ├── WhatsAppButton.tsx             # Floating WhatsApp (bottom-right), hidden on /admin/*
 │   ├── BackToTop.tsx                  # Gold chevron, appears after 400px scroll
 │   ├── DarkModeToggle.tsx             # Sun/Moon toggle via next-themes
