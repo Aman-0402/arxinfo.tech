@@ -86,7 +86,7 @@ arxinfo.tech/
 │   │       ├── clients/page.tsx
 │   │       ├── testimonials/page.tsx
 │   │       ├── pricing/page.tsx
-│   │       └── settings/page.tsx      # Site Settings: SiteContactForm
+│   │       └── settings/page.tsx      # Site Settings: SiteContactForm + SocialLinksForm (two sections)
 │   └── api/
 │       ├── contact/route.ts           # POST → prisma.contact.create()
 │       ├── verify/route.ts            # GET ?id= → prisma.certificate.findUnique()
@@ -103,10 +103,11 @@ arxinfo.tech/
 │           ├── clients/route.ts + [id]/route.ts
 │           ├── testimonials/route.ts + [id]/route.ts
 │           ├── pricing/route.ts + [id]/route.ts
-│           └── contact-info/route.ts  # GET + PUT (upsert id=1) for SiteContact
+│           ├── contact-info/route.ts  # GET + PUT (upsert id=1) for SiteContact
+│           └── social-links/route.ts + [id]/route.ts  # CRUD for SocialLink — drives footer icons
 ├── components/
 │   ├── Navbar.tsx                     # Fixed nav, transparent default, glassmorphism on scroll, links right-aligned, hidden on /admin/*
-│   ├── Footer.tsx                     # async server component, 4-col footer, contact info from DB (SiteContact) with fallback
+│   ├── Footer.tsx                     # async server component, 4-col footer, contact info from DB (SiteContact) with fallback; social icons from DB (SocialLink) with fallback to 4 defaults; data-platform attr drives hover colors via globals.css
 │   ├── ConditionalFooter.tsx          # Client wrapper — hides Footer on /admin/* routes
 │   ├── Preloader.tsx                  # Navy screen + logo.png + spinning gold arc + glow rings + bottom progress bar, fades at 1.8s
 │   ├── WhatsAppButton.tsx             # Floating WhatsApp (bottom-right), hidden on /admin/*
@@ -128,7 +129,8 @@ arxinfo.tech/
 │   │   ├── ClientsTable.tsx           # Clients CRUD: logo image or initials badge, marquee toggle
 │   │   ├── TestimonialsTable.tsx      # Testimonials CRUD: star rating, avatar, active toggle
 │   │   ├── PricingTable.tsx           # Pricing CRUD: name, tagline, price, period, badge label + color, highlight toggle, features (newline textarea → JSON), button label, order, active
-│   │   └── SiteContactForm.tsx        # "use client" form: address, phone, email, whatsapp, mapEmbed → PUT /api/admin/contact-info
+│   │   ├── SiteContactForm.tsx        # "use client" form: address, phone, email, whatsapp, mapEmbed → PUT /api/admin/contact-info
+│   │   └── SocialLinksForm.tsx        # "use client" CRUD table: platform select, label, URL, order, active → social-links API; "Load Defaults" seeds FB/Twitter/LinkedIn/Instagram
 │   ├── contact/
 │   │   └── ContactForm.tsx            # React Hook Form → POST /api/contact
 │   ├── verify/
@@ -155,9 +157,9 @@ arxinfo.tech/
 │   └── notify.ts                      # toast() (Toastr) + confirmDelete() + confirmAction() (SweetAlert2)
 ├── middleware.ts                      # Protects /admin/* → redirect to /admin/login (Edge-safe)
 ├── prisma/
-│   ├── schema.prisma                  # 15 models: Contact, Certificate, BlogPost, TeamMember,
+│   ├── schema.prisma                  # 16 models: Contact, Certificate, BlogPost, TeamMember,
 │   │                                  # PortfolioItem, Service, Stat, Client, Testimonial, PricingPlan,
-│   │                                  # SiteContact, ExamAdmin, ExamQuestion, ExamCandidate, ExamResult, ExamVoucher
+│   │                                  # SiteContact, SocialLink, ExamAdmin, ExamQuestion, ExamCandidate, ExamResult, ExamVoucher
 │   ├── seed.ts                        # Full reseed (DESTRUCTIVE) — never run on production
 │   ├── seed-services.ts               # One-shot: seeds 6 services
 │   └── seed-content.ts                # One-shot: seeds stats, clients, testimonials
@@ -220,6 +222,7 @@ arxinfo.tech/
 | Testimonials | CRUD, star rating (0.5 step), avatar, role | ✅ Done |
 | Pricing Plans | CRUD, badge label + color variant, highlight (navy card), features textarea, button label, order, active | ✅ Done |
 | Site Settings | Single-record form: address, phone, email, whatsapp, mapEmbed — drives footer + contact page | ✅ Done |
+| Social Media Links | CRUD table: platform (select), label, URL, order, active toggle; "Load Defaults" seeds FB/Twitter/LinkedIn/Instagram; footer reads active links ordered, falls back to defaults if DB empty | ✅ Done |
 
 ### Admin API guard
 All admin API routes use `isAdminAuthenticated(req)` from `lib/admin-api-guard.ts`.
@@ -279,6 +282,7 @@ AOS library removed — replaced with custom solution to avoid SSR hydration mis
 | Testimonial | testimonials | name, company, role, text, stars, avatar, order, active |
 | PricingPlan | pricing_plans | name, tagline, price, period, badge, badgeVariant, highlight, features (JSON string), buttonLabel, order, active |
 | SiteContact | site_contact | address, phone, email, whatsapp, mapEmbed — single row (id=1), upserted from admin |
+| SocialLink | social_links | platform, label, url, order, active — drives footer social icons |
 | ExamAdmin | exam_admins | username, password (bcrypt) |
 | ExamQuestion | exam_questions | question, optionA–D, correctOption |
 | ExamCandidate | exam_candidates | name, email |

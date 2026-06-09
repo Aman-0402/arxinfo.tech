@@ -102,7 +102,7 @@ npm run dev
 - URL: `/admin/login`
 - Credentials set via `ADMIN_USERNAME` + `ADMIN_PASSWORD` in `.env.local`
 - HTTP-only session cookie auth
-- Manages: Blog, Services, Pricing Plans, Certificates, Contacts, Team, Portfolio, Stats, Clients, Testimonials, Site Settings (contact info)
+- Manages: Blog, Services, Pricing Plans, Certificates, Contacts, Team, Portfolio, Stats, Clients, Testimonials, Site Settings (contact info + social media links)
 
 ---
 
