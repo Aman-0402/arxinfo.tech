@@ -76,3 +76,89 @@
     @apply inline-flex items-center gap-2 px-6 py-3 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-navy-900 font-bold font-poppins rounded transition-colors duration-200;
   }
 }
+
+/* Footer social icons */
+.social-icon {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-tooltip {
+  position: absolute;
+  top: 0;
+  font-size: 13px;
+  font-family: var(--font-poppins, sans-serif);
+  background: #fff;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  white-space: nowrap;
+}
+
+.social-tooltip::before {
+  content: "";
+  position: absolute;
+  height: 8px;
+  width: 8px;
+  background: #fff;
+  bottom: -3px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-icon:hover .social-tooltip {
+  top: -50px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.social-icon[data-platform="facebook"]:hover,
+.social-icon[data-platform="facebook"]:hover .social-tooltip,
+.social-icon[data-platform="facebook"]:hover .social-tooltip::before { background: #1877f2; color: #fff; }
+
+.social-icon[data-platform="twitter"]:hover,
+.social-icon[data-platform="twitter"]:hover .social-tooltip,
+.social-icon[data-platform="twitter"]:hover .social-tooltip::before { background: #1da1f2; color: #fff; }
+
+.social-icon[data-platform="linkedin"]:hover,
+.social-icon[data-platform="linkedin"]:hover .social-tooltip,
+.social-icon[data-platform="linkedin"]:hover .social-tooltip::before { background: #0077b5; color: #fff; }
+
+.social-icon[data-platform="instagram"]:hover,
+.social-icon[data-platform="instagram"]:hover .social-tooltip,
+.social-icon[data-platform="instagram"]:hover .social-tooltip::before { background: #e4405f; color: #fff; }
+
+.social-icon[data-platform="youtube"]:hover,
+.social-icon[data-platform="youtube"]:hover .social-tooltip,
+.social-icon[data-platform="youtube"]:hover .social-tooltip::before { background: #ff0000; color: #fff; }
+
+.social-icon[data-platform="github"]:hover,
+.social-icon[data-platform="github"]:hover .social-tooltip,
+.social-icon[data-platform="github"]:hover .social-tooltip::before { background: #24292e; color: #fff; }
+
+.social-icon[data-platform="whatsapp"]:hover,
+.social-icon[data-platform="whatsapp"]:hover .social-tooltip,
+.social-icon[data-platform="whatsapp"]:hover .social-tooltip::before { background: #25d366; color: #fff; }
+
+.social-icon[data-platform="tiktok"]:hover,
+.social-icon[data-platform="tiktok"]:hover .social-tooltip,
+.social-icon[data-platform="tiktok"]:hover .social-tooltip::before { background: #000000; color: #fff; }
+
+.social-icon:not([data-platform]):hover,
+.social-icon:not([data-platform]):hover .social-tooltip,
+.social-icon:not([data-platform]):hover .social-tooltip::before { background: #C9A84C; color: #0A1F44; }

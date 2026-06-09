@@ -168,6 +168,18 @@ model SiteContact {
   @@map("site_contact")
 }
 
+model SocialLink {
+  id        Int      @id @default(autoincrement())
+  platform  String   @db.VarChar(50)
+  label     String   @db.VarChar(100)
+  url       String   @db.VarChar(500)
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("social_links")
+}
+
 // ─── Exam Module ─────────────────────────────────────────────────────────────
 
 model ExamAdmin {

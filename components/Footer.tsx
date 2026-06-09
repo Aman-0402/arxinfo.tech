@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Youtube, Github, MessageCircle, Music, Share2, type LucideIcon } from "lucide-react";
 import { prisma } from "@/lib/db";
 
 const FALLBACK = {
@@ -8,6 +8,24 @@ const FALLBACK = {
   phone: "+91 8317818107",
   email: "info@arxinfo.tech",
 };
+
+const PLATFORM_META: Record<string, { Icon: LucideIcon; hoverColor: string }> = {
+  facebook:  { Icon: Facebook,       hoverColor: "#1877f2" },
+  twitter:   { Icon: Twitter,        hoverColor: "#1da1f2" },
+  linkedin:  { Icon: Linkedin,       hoverColor: "#0077b5" },
+  instagram: { Icon: Instagram,      hoverColor: "#e4405f" },
+  youtube:   { Icon: Youtube,        hoverColor: "#ff0000" },
+  github:    { Icon: Github,         hoverColor: "#24292e" },
+  whatsapp:  { Icon: MessageCircle,  hoverColor: "#25d366" },
+  tiktok:    { Icon: Music,          hoverColor: "#000000" },
+};
+
+const DEFAULT_SOCIAL = [
+  { id: -1, platform: "facebook",  label: "Facebook",  url: "#" },
+  { id: -2, platform: "twitter",   label: "Twitter",   url: "#" },
+  { id: -3, platform: "linkedin",  label: "LinkedIn",  url: "#" },
+  { id: -4, platform: "instagram", label: "Instagram", url: "#" },
+];
 
 const quickLinks = [
   { href: "/", label: "Home" },
@@ -30,12 +48,18 @@ const services = [
 ];
 
 export default async function Footer() {
-  const info = await prisma.siteContact.findFirst().catch(() => null);
+  const [info, dbSocial] = await Promise.all([
+    prisma.siteContact.findFirst().catch(() => null),
+    prisma.socialLink.findMany({ where: { active: true }, orderBy: { order: "asc" } }).catch(() => []),
+  ]);
+
   const contact = {
     address: info?.address ?? FALLBACK.address,
     phone: info?.phone ?? FALLBACK.phone,
     email: info?.email ?? FALLBACK.email,
   };
+
+  const socialLinks = dbSocial.length > 0 ? dbSocial : DEFAULT_SOCIAL;
 
   return (
     <footer className="bg-navy-900 text-white pt-16 pb-6">
@@ -56,23 +80,24 @@ export default async function Footer() {
               Leading IT services company in Kolkata delivering innovative
               technology solutions for businesses of all sizes.
             </p>
-            <div className="flex gap-3">
-              {[
-                { Icon: Facebook, label: "Facebook" },
-                { Icon: Twitter, label: "Twitter" },
-                { Icon: Linkedin, label: "LinkedIn" },
-                { Icon: Instagram, label: "Instagram" },
-              ].map(({ Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  className="w-8 h-8 bg-white/10 hover:bg-gold-400 hover:text-navy-900 rounded flex items-center justify-center transition-colors duration-200"
-                  aria-label={label}
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
+            <ul className="flex gap-2 list-none p-0 m-0">
+              {socialLinks.map((link) => {
+                const meta = PLATFORM_META[link.platform] ?? { Icon: Share2, hoverColor: "#C9A84C" };
+                const { Icon } = meta;
+                return (
+                  <li
+                    key={link.id}
+                    className="social-icon"
+                    data-platform={link.platform}
+                  >
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.label} className="contents">
+                      <span className="social-tooltip">{link.label}</span>
+                      <Icon size={18} />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           {/* Quick Links */}

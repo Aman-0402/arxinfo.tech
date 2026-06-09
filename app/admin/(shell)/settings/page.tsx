@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import SiteContactForm from "@/components/admin/SiteContactForm";
+import SocialLinksForm from "@/components/admin/SocialLinksForm";
 
 const FALLBACK = {
   address: "1st Floor, 150, Panchita\nBongaon-Bagdh Rd, Kolkata\nWest Bengal 743235, India",
@@ -10,7 +11,11 @@ const FALLBACK = {
 };
 
 export default async function SettingsPage() {
-  const info = await prisma.siteContact.findFirst();
+  const [info, socialLinks] = await Promise.all([
+    prisma.siteContact.findFirst(),
+    prisma.socialLink.findMany({ orderBy: { order: "asc" } }),
+  ]);
+
   const initial = {
     address: info?.address ?? FALLBACK.address,
     phone: info?.phone ?? FALLBACK.phone,
@@ -20,14 +25,20 @@ export default async function SettingsPage() {
   };
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-poppins font-bold text-2xl text-gray-800 dark:text-white">Site Settings</h1>
-        <p className="text-gray-500 text-sm mt-1">Contact information shown in footer and contact page.</p>
+    <div className="space-y-10">
+      <div>
+        <div className="mb-8">
+          <h1 className="font-poppins font-bold text-2xl text-gray-800 dark:text-white">Site Settings</h1>
+          <p className="text-gray-500 text-sm mt-1">Contact information and social media links.</p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+          <h2 className="font-poppins font-semibold text-lg text-gray-800 dark:text-white mb-6">Contact Information</h2>
+          <SiteContactForm initial={initial} />
+        </div>
       </div>
+
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
-        <h2 className="font-poppins font-semibold text-lg text-gray-800 dark:text-white mb-6">Contact Information</h2>
-        <SiteContactForm initial={initial} />
+        <SocialLinksForm links={socialLinks} />
       </div>
     </div>
   );
